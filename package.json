@@ -1,0 +1,14 @@
+{
+  "name": "daytask-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "packageManager": "pnpm@11.20.0",
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}
