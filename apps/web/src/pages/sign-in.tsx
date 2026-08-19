@@ -18,7 +18,7 @@ export default function SignIn(){
                 <h2 className="text-2xl text-primary-pure-white mt-8">Welcome Back!</h2>
 
                 {/* inputs container */}
-                <div>
+                <form>
                     <Input type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
                     <Input type="Password" htmlFor="Password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
 
@@ -29,7 +29,7 @@ export default function SignIn(){
                     <div className="bg-primary-yellow-100 cursor-pointer text-xl p-2 mt-4">
                         <Button bgColor="primary-yellow-100" color="primary-black-100" text="Log In"/>
                     </div>
-                </div>
+                </form>
                 {/*continue lines  */}
                 <div className="mt-8">
                     <div className="w-full grid grid-cols-3 items-center">
