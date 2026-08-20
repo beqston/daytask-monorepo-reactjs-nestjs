@@ -1,8 +1,5 @@
-import LoginLayout from "./login-layout";
-import ProtectedLayout from "./protected-layout";
+import { Outlet } from "react-router-dom";
 
 export default function Layout(){
-    let isLogin = true;
-
-    return isLogin? <ProtectedLayout />:<LoginLayout/>
+    return <Outlet />
 }

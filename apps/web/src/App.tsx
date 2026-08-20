@@ -7,6 +7,7 @@ import SignIn from './pages/sign-in'
 import ProtectedLayout from './layout/protected-layout'
 import Layout from './layout/layout'
 import NotFound from './pages/not-found'
+import Home from './pages/home'
 
 function App() {
 
@@ -19,13 +20,14 @@ function App() {
           <Route path='/' element={<GreetingPage/>}/>
           <Route path='/sign-up' element={<SignUp/>}/>
           <Route path='/sign-in' element={<SignIn/>}/>
-          <Route path='*' element={<NotFound/>}/>
         </Route>
 
         <Route element={<ProtectedLayout />}>
-          
+          <Route path='/home' element={<Home />} />
         </Route>
       </Route>
+      
+      <Route path='*' element={<NotFound/>}/>
     </Routes>
     </BrowserRouter>
   )
