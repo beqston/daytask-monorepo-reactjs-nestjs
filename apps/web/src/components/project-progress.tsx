@@ -1,15 +1,15 @@
 interface ProjectProgressProps{
-    parcetange:number;
+    percentage:number;
     size?:number;
     strokeWidth?:number;
 }
-export default function ProjectProgress({size=120, strokeWidth=4, parcetange}:ProjectProgressProps){
+export default function ProjectProgress({size=120, strokeWidth=4, percentage}:ProjectProgressProps){
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
-    const offset = circumference - (parcetange / 100) * circumference; 
+    const offset = circumference - (percentage / 100) * circumference; 
     return(
         <div className="relative inline-flex justify-center items-center">
-            <svg width={size} height={size} className="rorate-[-90deg]">
+            <svg width={size} height={size} className="rotate-30 origin-center">
                 {/* background circle */}
                 <circle 
                     cx={size / 2}
@@ -36,7 +36,7 @@ export default function ProjectProgress({size=120, strokeWidth=4, parcetange}:Pr
             </svg>
             {/* centre text */}
             <span className="absolute text-sm font-semibold text-white">
-                {parcetange}%
+                {percentage}%
             </span>
         </div>
     )
