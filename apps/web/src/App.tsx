@@ -8,6 +8,7 @@ import ProtectedLayout from './layout/protected-layout'
 import Layout from './layout/layout'
 import NotFound from './pages/not-found'
 import Home from './pages/home'
+import Messages from './pages/messages'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
 
         <Route element={<ProtectedLayout />}>
           <Route path='/home' element={<Home />} />
+          <Route path='/messages' element={<Messages />} />
         </Route>
       </Route>
       

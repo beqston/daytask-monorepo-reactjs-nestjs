@@ -4,11 +4,12 @@ import search from '/images/home/search.png'
 import setting from '/images/home/setting.png'
 import CompleteTask from '../components/complete-task'
 import ProjectsContaiiner from '../components/projects'
+import Navbar from '../components/navbar'
 export default function Home(){
     return(
         <main className='bg-primary-black-100 min-h-screen'>
 
-            <section className='w-full lg:w-[50%] m-auto p-4'>
+            <section className='w-full lg:w-[50%] m-auto p-4 relative pb-28'>
                 {/* head of home page*/}
                 <div className='flex justify-between mt-8 content-center'>
                     <div>
@@ -56,6 +57,7 @@ export default function Home(){
                 <ProjectsContaiiner title='Mobile App Wireframe' percentage={75} />
                 <ProjectsContaiiner title='Real Estate Desings App' percentage={70} />
                 <ProjectsContaiiner title='Dashboards & App Desings' percentage={40} />
+                <Navbar />
             </section>
 
         </main>
