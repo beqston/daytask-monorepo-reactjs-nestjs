@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import type { NavLinkRenderProps } from "react-router-dom";
 
 import HomeIcon from "../assets/icons/home.svg?react";
@@ -8,11 +8,19 @@ import NotificationIcon from "../assets/icons/notification.svg?react";
 import addsquare from "../assets/icons/addsquare.png";
 
 export default function Navbar() {
-  // function for active pages color
-  const navLinkClasses = ({ isActive }:NavLinkRenderProps) =>
+  const location = useLocation();
+
+  // check is active messages page
+  const isMessageActive = location.pathname == "/messages" || location.pathname=="/message-groups";
+
+  // style for link tags
+  const getLinkClasses = (isActive: boolean) =>
     `flex flex-col items-center gap-2 cursor-pointer transition-colors duration-200 ${
       isActive ? "text-[#FCD068]" : "text-[#768C9E]"
     }`;
+
+  // function for active pages color
+  const navLinkClasses = ({ isActive }:NavLinkRenderProps) => getLinkClasses(isActive)
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full lg:w-[50%] z-50 bg-primary-blue-200 h-22 p-4 items-center">
@@ -26,7 +34,7 @@ export default function Navbar() {
         </li>
 
         <li>
-          <NavLink to="/messages" className={navLinkClasses}>
+          <NavLink to="/messages" className={getLinkClasses(isMessageActive)}>
             <MessagesIcon className="w-6 h-6" />
             <span className="text-sm font-medium">Messages</span>
           </NavLink>

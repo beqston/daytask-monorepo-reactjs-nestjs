@@ -9,6 +9,7 @@ import Layout from './layout/layout'
 import NotFound from './pages/not-found'
 import Home from './pages/home'
 import Messages from './pages/messages'
+import MessageGroups from './pages/messages-groups'
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route element={<ProtectedLayout />}>
           <Route path='/home' element={<Home />} />
           <Route path='/messages' element={<Messages />} />
+          <Route path='/message-groups' element={<MessageGroups />} />
         </Route>
       </Route>
       
