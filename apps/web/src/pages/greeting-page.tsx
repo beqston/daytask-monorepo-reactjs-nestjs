@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import letsStart from "/images/lets-start.png"
-import Button from "../components/button"
+import Button from "../components/ui/button"
 import DayTask from "../components/day-task"
 
 export default function GreetingPage(){

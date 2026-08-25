@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom'
 import profile from '/images/home/profile.png'
 import search from '/images/home/search.png'
 import setting from '/images/home/setting.png'
-import CompleteTask from '../components/complete-task'
-import ProjectsContaiiner from '../components/projects'
-import Navbar from '../components/navbar'
-import PagesWrapper from '../components/pages-wrapper'
+import CompleteTask from '../components/home/complete-task'
+import ProjectContaiiner from '../components/home/project-container'
+import Navbar from '../components/ui/navbar'
+import PagesWrapper from '../components/ui/pages-wrapper'
 export default function Home(){
     return(
        <PagesWrapper>
@@ -53,9 +53,9 @@ export default function Home(){
                 <Link className='text-primary-yellow-100' to={'/home'}>See all</Link>
             </div>
             {/* ongoing projects container */}
-            <ProjectsContaiiner title='Mobile App Wireframe' percentage={75} />
-            <ProjectsContaiiner title='Real Estate Desings App' percentage={70} />
-            <ProjectsContaiiner title='Dashboards & App Desings' percentage={40} />
+            <ProjectContaiiner title='Mobile App Wireframe' percentage={75} />
+            <ProjectContaiiner title='Real Estate Desings App' percentage={70} />
+            <ProjectContaiiner title='Dashboards & App Desings' percentage={40} />
             <Navbar />
        </PagesWrapper>
     )

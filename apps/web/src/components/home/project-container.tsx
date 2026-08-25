@@ -1,4 +1,4 @@
-import ProjectProgress from './project-progress';
+import ProjectProgress from '../project-progress';
 import ellipse1 from '/images/home/team-members/Ellipse1.png'
 import ellipse2 from '/images/home/team-members/Ellipse2.png'
 import ellipse3 from '/images/home/team-members/Ellipse3.png'
@@ -7,7 +7,7 @@ interface ProjectPorops{
     title:string;
     percentage:number;
 }
-export default function ProjectsContaiiner({title, percentage}:ProjectPorops){
+export default function ProjectContaiiner({title, percentage}:ProjectPorops){
     return(
         <article className='text-primary-pure-white bg-light-blue-100 flex flex-col gap-8 p-8 mt-8 '>
             <h2 className='text-3xl'>{title}</h2>

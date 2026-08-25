@@ -1,10 +1,10 @@
 import DayTask from "../components/day-task";
-import Input from "../components/input";
+import Input from "../components/ui/input";
 import usertag from "/images/usertag.png"
 import lock1 from "/images/lock1.png"
 import showPassword from "/images/show-password.png"
 import { Link } from "react-router-dom";
-import Button from "../components/button";
+import Button from "../components/ui/button";
 
 export default function SignIn(){
     return(

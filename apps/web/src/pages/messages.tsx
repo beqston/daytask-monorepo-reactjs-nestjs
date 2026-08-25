@@ -1,34 +1,34 @@
-import { NavLink } from "react-router-dom";
-import Navbar from "../components/navbar";
-import PagesWrapper from "../components/pages-wrapper";
-import arrow from '/images/arrowleft.png'
-import edit from '/images/edit.png'
+import Navbar from "../components/ui/navbar";
+import PagesWrapper from "../components/ui/pages-wrapper";
+import MessagesHead from "../components/messages/messages-head";
+import ChatsLinks from "../components/messages/chat-links";
+import MessageWrapper from "../components/messages/message-wrapper";
+
+import profile1 from "/images/profile1.png"
+import { Link } from "react-router-dom";
+
 
 export default function Messages(){
-    const navLinkClasses = ({isActive}:{isActive:boolean})=>{
-        return  `
-            ${isActive? "bg-[#FED36A]":"bg-[#263238] "}
-        `
-    }
+
     return(
         <PagesWrapper>
                 {/*head of messages page  */}
-                <div className="flex justify-between pt-4 items-center ">
-                    <div className="w-6 h-6">
-                        <img src={arrow} className="bg-cover" alt="arrow" />
-                    </div>
-                    <h1 className="text-primary-pure-white text-2xl">Messages</h1>
-                    <div className="w-6 h-6 cursor-pointer">
-                        <img src={edit} className="bg-cover" alt="edit" />
-                    </div>
-                </div>
+                <MessagesHead />
 
                 {/* chat and group buttons container */}
-                <div className="grid grid-cols-2 p-4 lg:p-8 gap-4">
-                    <NavLink to={'/messages'} className={navLinkClasses}>Chat</NavLink>
-                    <NavLink to={'/message-groups'} className={navLinkClasses}>Groups</NavLink>
+                <ChatsLinks />
+
+                {/* all messages container */}
+                <div>
+                    <MessageWrapper author="Jhon Doe" isReadMessage={false} lastMessage="Hello, i am jhon dddddddddd sssssssssssss sssssssssssssssssss" minuteAgo="31" imageUrl={profile1}  />
+                    <MessageWrapper author="Jhon Doe" isReadMessage={true} lastMessage="Hello, i am jhon" minuteAgo="31" imageUrl={profile1}  />
                 </div>
 
+                <div className="flex justify-end px-8 mt-4">
+                    <Link to={'/messages'} className="bg-primary-yellow-100 py-4 px-8" >Start Chat</Link>
+                </div>
+
+                {/* site navbar links container */}
                 <Navbar />
         </PagesWrapper>
     )
