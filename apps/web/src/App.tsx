@@ -10,6 +10,7 @@ import NotFound from './pages/not-found'
 import Home from './pages/home'
 import Messages from './pages/messages'
 import MessageGroups from './pages/messages-groups'
+import ChatPage from './pages/chat'
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
         <Route element={<ProtectedLayout />}>
           <Route path='/home' element={<Home />} />
           <Route path='/messages' element={<Messages />} />
+          <Route path='/messages/:id' element={<ChatPage />} />
           <Route path='/message-groups' element={<MessageGroups />} />
         </Route>
       </Route>
