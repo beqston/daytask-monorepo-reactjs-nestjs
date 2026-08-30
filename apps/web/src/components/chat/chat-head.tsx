@@ -12,7 +12,7 @@ interface ChatHeadProps{
 
 export default function ChatHead({username, isActive}:ChatHeadProps){
     return(
-        <div className='grid grid-cols-[3fr_2fr] p-8'>
+        <div className='grid grid-cols-[3fr_2fr] pt-8'>
             {/* arrow and user's info container */}
             <div className='grid grid-cols-[1fr_4fr] items-center'>
                 {/* arrow image container */}

@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import PagesWrapper from "../components/ui/pages-wrapper";
 import ChatHead from "../components/chat/chat-head";
 import Message from "../components/chat/message";
+import SendMessage from "../components/messages/send-message";
 
 export default function ChatPage({}){
     const params = useParams();
@@ -14,6 +15,8 @@ export default function ChatPage({}){
             <Message isAuthor={true} text="Hello Friend" isSeen={true} isManyMessage={false} />
             <Message isAuthor={false} text="Hello, what's up?" isManyMessage={false}/>
             <Message isAuthor={false} text="Hello, what's up?" isManyMessage={true}/>
+
+            <SendMessage />
         </PagesWrapper>
     )
 }
