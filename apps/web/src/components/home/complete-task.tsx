@@ -1,3 +1,4 @@
+import TaskMembers from './task-members'
 import ellipse1 from '/images/home/team-members/Ellipse1.png'
 import ellipse2 from '/images/home/team-members/Ellipse2.png'
 import ellipse3 from '/images/home/team-members/Ellipse3.png'
@@ -19,13 +20,9 @@ export default function CompleteTask({isCompleted=false, parcentage=0, title}:Co
                 <div className='mt-4'>
                     <div className='flex gap-4'>
                         <p className={`text-${isCompleted?'white':'primary-black-200'}`}>Team members</p>
-                        <div className='flex gap-1'>
-                            <img width={14} height={14} className='rounded-[50%] ' src={ellipse1} alt="members"/>
-                            <img width={14} height={14} className='rounded-[50%] ' src={ellipse2} alt="members"/>
-                            <img width={14} height={14} className='rounded-[50%] ' src={ellipse3} alt="members"/>
-                            <img width={14} height={14} className='rounded-[50%] ' src={ellipse4} alt="members"/>
-                            <img width={14} height={14} className='rounded-[50%] ' src={ellipse5} alt="members"/>
-                        </div>
+                        
+                        {/* members imgages container */}
+                        <TaskMembers members={[ellipse1, ellipse2, ellipse3, ellipse4, ellipse5]} />
                     </div>
 
                     <div className="w-full">
