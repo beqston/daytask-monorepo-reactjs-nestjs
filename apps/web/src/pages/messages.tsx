@@ -5,10 +5,19 @@ import ChatsLinks from "../components/messages/chat-links";
 import MessageWrapper from "../components/messages/message-wrapper";
 
 import profile1 from "/images/profile1.png"
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import NewMessage from "../components/messages/new-message/new-message";
 
 
 export default function Messages(){
+
+    const [isNewMessage, setIsNewMessage] = useState(false);
+
+    if(isNewMessage){
+        return (
+            <NewMessage  setIsNewMessage={setIsNewMessage} />
+        )
+    }
 
     return(
         <PagesWrapper>
@@ -24,8 +33,8 @@ export default function Messages(){
                     <MessageWrapper author="Jhon Doe" isReadMessage={true} lastMessage="Hello, i am jhon" minuteAgo="31" imageUrl={profile1}  />
                 </div>
 
-                <div className="flex justify-end px-8 mt-4">
-                    <Link to={'/messages'} className="bg-primary-yellow-100 py-4 px-8" >Start Chat</Link>
+                <div onClick={()=>setIsNewMessage(true)} className="flex justify-end px-8 mt-4">
+                    <button className="bg-primary-yellow-100 py-4 px-8" >Start Chat</button>
                 </div>
 
                 {/* site navbar links container */}
