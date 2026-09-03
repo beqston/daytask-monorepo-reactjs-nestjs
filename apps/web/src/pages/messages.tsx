@@ -7,11 +7,13 @@ import MessageWrapper from "../components/messages/message-wrapper";
 import profile1 from "/images/profile1.png"
 import { useState } from "react";
 import NewMessage from "../components/messages/new-message/new-message";
+import { Loading } from "../components/ui/loading";
 
 
 export default function Messages(){
 
     const [isNewMessage, setIsNewMessage] = useState(false);
+    const [isloading, setIsloading] = useState(false);
 
     if(isNewMessage){
         return (
@@ -21,6 +23,7 @@ export default function Messages(){
 
     return(
         <PagesWrapper>
+ 
                 {/*head of messages page  */}
                 <MessagesHead />
 
@@ -33,10 +36,22 @@ export default function Messages(){
                     <MessageWrapper author="Jhon Doe" isReadMessage={true} lastMessage="Hello, i am jhon" minuteAgo="31" imageUrl={profile1}  />
                 </div>
 
-                <div onClick={()=>setIsNewMessage(true)} className="flex justify-end px-8 mt-4">
+                <div 
+                    onClick={()=>{
+                        setIsloading(true)
+                        setTimeout(()=>{
+                            setIsNewMessage(true)
+                            setIsloading(false)
+                        }, 1000)
+                    }} 
+                    className="flex justify-end px-8 mt-4"
+                    >
+
                     <button className="bg-primary-yellow-100 py-4 px-8" >Start Chat</button>
                 </div>
-
+                {
+                    isloading && <Loading />
+                }
                 {/* site navbar links container */}
                 <Navbar />
         </PagesWrapper>
