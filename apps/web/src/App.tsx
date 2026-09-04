@@ -12,6 +12,7 @@ import Messages from './pages/messages'
 import MessageGroups from './pages/messages-groups'
 import ChatPage from './pages/chat'
 import TaskDetailsPage from './pages/tassk-details'
+import Calendar from './pages/calendar'
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
           <Route path='/messages/:id' element={<ChatPage />} />
           <Route path='/message-groups' element={<MessageGroups />} />
           <Route path='/task-details/:id' element={<TaskDetailsPage />} />
+          <Route path='/calendar' element={<Calendar />} />
         </Route>
       </Route>
       

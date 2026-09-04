@@ -10,12 +10,12 @@ export default function MessageGroups(){
 
     return(
         <PagesWrapper>
-                <MessagesHead />
-                {/* chat and group buttons container */}
-                <ChatsLinks />
-                
-                <GroupMessagesWrapper groupName="Android Developer" lastMessage="Hello, do your homeworks? " lastMessagesTime="12:31" imageUrl={profile1}  />
-                <GroupMessagesWrapper groupName="Web Developer" lastMessage="Hello, what's new?" lastMessagesTime="20:10" imageUrl={profile1}  />
+            <MessagesHead />
+            {/* chat and group buttons container */}
+            <ChatsLinks />
+            
+            <GroupMessagesWrapper groupName="Android Developer" lastMessage="Hello, do your homeworks? " lastMessagesTime="12:31" imageUrl={profile1}  />
+            <GroupMessagesWrapper groupName="Web Developer" lastMessage="Hello, what's new?" lastMessagesTime="20:10" imageUrl={profile1}  />
 
             <Navbar />
         </PagesWrapper>

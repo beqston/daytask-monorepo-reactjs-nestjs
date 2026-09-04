@@ -12,9 +12,9 @@ export default function NewMessageHead({setIsNewMessage}:NewMessageHeadProps){
             >
                 <img src={arrow} className="bg-cover" alt="arrow" />
             </div>
-            <h1 className="text-primary-pure-white text-2xl">Messages</h1>
+            <h1 className="text-primary-pure-white text-2xl">New Messages</h1>
             <div className="w-6 h-6 cursor-pointer">
-                <img src={search} className="bg-cover" alt="edit" />
+                <img src={search} className="object-fill w-full h-full" alt="edit" />
             </div>
         </div>
     )

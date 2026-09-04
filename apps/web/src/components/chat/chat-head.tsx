@@ -23,7 +23,7 @@ export default function ChatHead({username, isActive}:ChatHeadProps){
                 {/* user's info */}
                 <div className='grid grid-cols-[47px_1fr] overflow-hidden gap-x-4'>
                     <div className='max-w-11.75'>
-                        <img src={profile} alt="profile-image" />
+                        <img className='object-fill w-full h-full' src={profile} alt="profile-image" />
                     </div>
 
                     <div>
