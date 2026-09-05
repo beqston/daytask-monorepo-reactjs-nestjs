@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const days = [
   { id: 1, date: 1, day: 'Mon' },
@@ -14,7 +14,7 @@ export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(4); 
 
   return (
-    <div className="p-4 text-white  rounded-xl">
+    <div className="py-4 text-white  rounded-xl">
       <h2 className="text-xl font-bold mb-4">November</h2>
       
       {/* Horizontal Scroll / Grid Bar */}

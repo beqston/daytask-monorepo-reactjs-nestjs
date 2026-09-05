@@ -3,7 +3,6 @@
 @theme{
   --color-primary-black-100:#1E1E1E;
   --color-primary-yellow-100:#FED36A;
-
   --color-primary-pure-white:#FFFFFF;
   --color-primary-pure-black:#000000;
   --color-primary-blue-100:#8CAAB9;
@@ -13,6 +12,7 @@
   --color-primary-grey-100:#B8B8B8;
   --color-primary-grey-300:#212832;
   --color-primary-grey-200:#BCCFD8;
+  --color-primary-white-400:#D2D2D2;
 }
 
 @layer base {
