@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import type { NavLinkRenderProps } from "react-router-dom";
 
 import HomeIcon from "../../assets/icons/home.svg?react";
@@ -43,7 +43,7 @@ export default function Navbar() {
         {/* central button */}
         <li className="bg-primary-yellow-100 cursor-pointer min-w-12 min-h-12 md:w-13.5 md:h-13.5 flex justify-center items-center rounded-lg">
           <div className="w-4 h-4 sm:w-6 sm:h-6 xl:w-8 xl:h-8">
-            <img className="object-fill w-full h-full" src={addsquare} alt="add icon" />
+            <Link to="/create-task"><img className="object-fill w-full h-full" src={addsquare} alt="add icon" /></Link>
           </div>
         </li>
 

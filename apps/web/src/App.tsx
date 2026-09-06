@@ -13,6 +13,7 @@ import MessageGroups from './pages/messages-groups'
 import ChatPage from './pages/chat'
 import TaskDetailsPage from './pages/tassk-details'
 import Calendar from './pages/calendar'
+import CreateTask from './pages/create-task'
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
 
         <Route element={<ProtectedLayout />}>
           <Route path='/home' element={<Home />} />
+          <Route path='/create-task' element={<CreateTask />} />
           <Route path='/messages' element={<Messages />} />
           <Route path='/messages/:id' element={<ChatPage />} />
           <Route path='/message-groups' element={<MessageGroups />} />
