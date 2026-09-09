@@ -14,6 +14,7 @@ import ChatPage from './pages/chat'
 import TaskDetailsPage from './pages/tassk-details'
 import Calendar from './pages/calendar'
 import CreateTask from './pages/create-task'
+import Notification from './pages/notification'
 
 function App() {
 
@@ -36,6 +37,7 @@ function App() {
           <Route path='/message-groups' element={<MessageGroups />} />
           <Route path='/task-details/:id' element={<TaskDetailsPage />} />
           <Route path='/calendar' element={<Calendar />} />
+          <Route path='/notification' element={<Notification />} />
         </Route>
       </Route>
       
