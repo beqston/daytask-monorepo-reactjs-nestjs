@@ -15,6 +15,7 @@ import TaskDetailsPage from './pages/tassk-details'
 import Calendar from './pages/calendar'
 import CreateTask from './pages/create-task'
 import Notification from './pages/notification'
+import Profile from './pages/profile'
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
           <Route path='/task-details/:id' element={<TaskDetailsPage />} />
           <Route path='/calendar' element={<Calendar />} />
           <Route path='/notification' element={<Notification />} />
+          <Route path='/profile' element={<Profile />} />
         </Route>
       </Route>
       
