@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayloadType } from 'src/types/jwtpayload';
+import { ConfigService } from '@nestjs/config';
+import bcrypt from "bcrypt"
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+
+  constructor(
+    private jwtService:JwtService,
+    private configService:ConfigService
+  ){}
+
+  async login(user:JwtPayloadType) {
+    const payload = {sub:user.sub, email:user.email, role:user.role}
+
+    const accessExpiresIn = this.configService.getOrThrow<string>("auth.jwtAccessExpiresIn");
+    const accessSecret = this.configService.getOrThrow<string>("auth.jwtAccessSecret");
+
+    const token = await this.jwtService.signAsync(payload, {
+      expiresIn:accessExpiresIn as any,
+      secret:accessSecret
+    });
+
+    const refreshSecret = this.configService.get<string>("auth.jwtRefreshSecret")
+    const refreshExpiresIn = this.configService.get<string>("auth.jwtRefreshExpires")
+
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn:refreshExpiresIn as any,
+      secret:refreshSecret
+    })
+
+    const hashedRefreshToken = await bcrypt.hash(token, 10)
+    return{
+      email:user.email,
+      role:user.role,
+      token,
+      hashedRefreshToken
+    };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  validateUser() {
+    return `validation user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  refreshToken(){
+    return "refresh token"
   }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+ 
 }
