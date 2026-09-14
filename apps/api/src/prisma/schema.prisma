@@ -10,8 +10,8 @@ datasource db {
 }
 
 enum Roles{
-    USER
-    ADMIN
+  USER
+  ADMIN
 }
 
 model User {
@@ -27,16 +27,17 @@ model User {
 
 
 model Task{
-    id            String @id  @default(uuid())
-    title         String
-    details       String
-    members       String[]
-    time          String
-    date          String
-    isCompleted   Boolean?       @default(false)
-    author        User           @relation(fields:[authorId], references:[id] ,  onDelete: Cascade)
-    authorId      String
-    subtask       String?   
-    createdAt     DateTime      @default(now())
-    updatedAt     DateTime      @updatedAt
+  id            String @id  @default(uuid())
+  title         String
+  details       String
+  percentage    String
+  members       String[]
+  time          String
+  date          String
+  isCompleted   Boolean?       @default(false)
+  author        User           @relation(fields:[authorId], references:[id] ,  onDelete: Cascade)
+  authorId      String
+  subtask       String?   
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }

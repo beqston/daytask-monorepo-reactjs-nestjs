@@ -23,7 +23,7 @@ export default function Home(){
 
             {/* complete tasks */}
             <CompleteTasksWrapper>
-                <CompleteTask title='Real Estate Website'/>
+                <CompleteTask title='Real Estate Website' isFirstElement={true} />
                 <CompleteTask title='Finance Mobile App Desing' />
                 <CompleteTask title='Real Finance Task' />
             </CompleteTasksWrapper>
