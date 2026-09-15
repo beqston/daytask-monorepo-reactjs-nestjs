@@ -29,7 +29,7 @@ export default function SignUp(){
                         <Link to={'/reset-password'}>Forgot Password?</Link>
                     </p>
                     {/* sign up button congainer */}
-                    <div className="bg-primary-yellow-100 cursor-pointer text-xl p-2 mt-4">
+                    <div className="bg-primary-yellow-100 cursor-pointer text-xl text-center font-medium p-2 mt-4">
                         <Button bgColor="primary-yellow-100" color="primary-black-100" text="Sign Up"/>
                     </div>
 

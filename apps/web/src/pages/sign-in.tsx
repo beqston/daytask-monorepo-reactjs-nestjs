@@ -54,7 +54,6 @@ export default function SignIn(){
                     <Link className="text-primary-yellow-100" to={'/sign-up'}>Sign Up</Link>
                 </div>
                 
-                
             </section>
         </main>
 
