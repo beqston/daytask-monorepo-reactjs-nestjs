@@ -5,12 +5,57 @@ import lock1 from "/images/lock1.png"
 import userImage from "/images/user.png"
 import ticksquare from "/images/ticksquare.png"
 import showPassword from "/images/show-password.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/button";
+import { useState } from "react";
+import { Loading } from "../components/ui/loading";
 
 export default function SignUp(){
+
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        fullname:"",
+        email:"",
+        password:""
+    });
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    function handleChange(e:React.ChangeEvent<HTMLInputElement>){
+        const { name, value } = e.target;
+        setFormData((prev)=> ({
+            ...prev,
+            [name]:value
+        }))
+    }
+
+    async function handleSubmit(e: React.FormEvent){
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const res = await fetch("/api/v1/users", {
+                method:"POST",
+                body:JSON.stringify(formData)
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Something went wrong");
+            }
+
+            navigate('/sign-in')
+        } catch (err:any) {
+            setErrorMessage("Please enter al value");
+
+        }finally{
+            setLoading(false);
+        }
+    }
+
     return(
-        <main className="bg-primary-black-100 p-8 md:p-12 w-full min-h-screen ">
+        <main className="bg-primary-black-100 p-8 md:p-12 w-full min-h-screen">
             <section className="grid content-start grid-cols-1 lg:w-[40%] m-auto pb-12 md:pb-4 lg:justify-center lg:align-top">
 
                 {/* dayli task logo */}
@@ -20,10 +65,10 @@ export default function SignUp(){
                 <h2 className="text-2xl text-primary-pure-white mt-8">Create your account</h2>
 
                 {/* inputs container */}
-                <form>
-                    <Input type="text" htmlFor="username" placehoolder="Fazil Laghari" text="Full Name" leftImage={userImage} />
-                    <Input type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
-                    <Input type="Password" htmlFor="Password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
+                <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+                    <Input onChange={handleChange} type="text" htmlFor="fullname" placehoolder="Fazil Laghari" text="Full Name" leftImage={userImage} />
+                    <Input onChange={handleChange} type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
+                    <Input onChange={handleChange} type="Password" htmlFor="Password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>
@@ -84,6 +129,8 @@ export default function SignUp(){
                 </div>
                 
             </section>
+            {loading && <Loading />}
+            {errorMessage && <p className="absolute right-1 top-1 p-2 bg-white text-red-400">{errorMessage}</p>}
         </main>
 
     )
