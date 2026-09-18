@@ -9,13 +9,14 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/button";
 import { useState } from "react";
 import { Loading } from "../components/ui/loading";
+import ErrorMessage from "../components/error/error";
 
 export default function SignUp(){
 
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        fullname:"",
+        fullName:"",
         email:"",
         password:""
     });
@@ -34,23 +35,29 @@ export default function SignUp(){
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await fetch("/api/v1/users", {
+            const res = await fetch("http://localhost:3000/api/v1/users", {
                 method:"POST",
+                headers: {
+                "Content-Type": "application/json"
+            },
                 body:JSON.stringify(formData)
             });
 
-            const data = await res.json();
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            
 
-            if (!res.ok) {
-                throw new Error(data.message || "Something went wrong");
-            }
+            throw new Error(errorData.message[0] || "Something went wrong");
+        }
 
             navigate('/sign-in')
         } catch (err:any) {
-            setErrorMessage("Please enter al value");
-
+            setErrorMessage(err.message);
         }finally{
             setLoading(false);
+            setTimeout(()=>{
+                setErrorMessage("");
+            }, 8000)
         }
     }
 
@@ -66,9 +73,9 @@ export default function SignUp(){
 
                 {/* inputs container */}
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-                    <Input onChange={handleChange} type="text" htmlFor="fullname" placehoolder="Fazil Laghari" text="Full Name" leftImage={userImage} />
-                    <Input onChange={handleChange} type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
-                    <Input onChange={handleChange} type="Password" htmlFor="Password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
+                    <Input onChange={handleChange} type="text" htmlFor="fullName" placehoolder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} />
+                    <Input onChange={handleChange} type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email}/>
+                    <Input onChange={handleChange} type="password" htmlFor="password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>
@@ -130,7 +137,7 @@ export default function SignUp(){
                 
             </section>
             {loading && <Loading />}
-            {errorMessage && <p className="absolute right-1 top-1 p-2 bg-white text-red-400">{errorMessage}</p>}
+            {errorMessage && <ErrorMessage text={errorMessage} />}
         </main>
 
     )

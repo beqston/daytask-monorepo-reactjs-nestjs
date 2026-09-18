@@ -5,5 +5,5 @@ interface ButtonType{
     paddingY?:number;
 }
 export default function Button({bgColor, color, text, paddingY}:ButtonType){
-    return <button className={`py-[${paddingY}px] bg-${bgColor} text-${color}`}>{text}</button>
+    return <button className={`py-[${paddingY}px] bg-${bgColor} text-${color} w-full h-full`}>{text}</button>
 }
