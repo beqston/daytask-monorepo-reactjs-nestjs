@@ -55,7 +55,7 @@ export class AuthService {
     if(!isPasswordValid) throw new NotAcceptableException("Invalid credentials");
 
     const {password:_, ...result} = user;
-    return user;
+    return result;
   }
 
   refreshToken(){
