@@ -1,15 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { User } from '@prisma/client';
+import { LocalGuard } from './guards/local.guard';
+import {type Request, type Response} from "express"
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return "auth route is working";
+  @UseGuards(LocalGuard)
+  create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
+    return this.authService.login(req.user as Omit<User, 'password'>);
   }
  
 }
