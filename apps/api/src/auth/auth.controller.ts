@@ -10,8 +10,23 @@ export class AuthController {
 
   @Post()
   @UseGuards(LocalGuard)
-  create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
-    return this.authService.login(req.user as Omit<User, 'password'>);
+  async create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
+    const user = await this.authService.login(req.user as Omit<User, 'password'>);
+    res.cookie('access_token', user.token, {
+      secure:true,
+      httpOnly:true,
+      sameSite:"lax",
+      maxAge:15 * 60 * 1000
+    });
+
+    res.cookie("refresh_token", user.hashedRefreshToken, {
+      secure:true,
+      httpOnly:true,
+      sameSite:"lax",
+      maxAge:7 * 24 * 60 * 60 * 1000
+    });
+
+    return user;
   }
  
 }

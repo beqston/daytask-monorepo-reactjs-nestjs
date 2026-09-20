@@ -12,9 +12,7 @@ import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
 
 export default function SignUp(){
-
     const navigate = useNavigate();
-
     const [formData, setFormData] = useState({
         fullName:"",
         email:"",
@@ -33,9 +31,10 @@ export default function SignUp(){
 
     async function handleSubmit(e: React.FormEvent){
         e.preventDefault();
+        const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
         try {
             setLoading(true);
-            const res = await fetch("http://localhost:3000/api/v1/users", {
+            const res = await fetch(`${BASE_URL}/api/v1/users`, {
                 method:"POST",
                 headers: {
                 "Content-Type": "application/json"
