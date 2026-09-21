@@ -3,11 +3,13 @@ import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { LocalGuard } from './guards/local.guard';
 import {type Request, type Response} from "express"
+import { Public } from './decorators/public-decorator';
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post()
   @UseGuards(LocalGuard)
   async create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
@@ -28,5 +30,4 @@ export class AuthController {
 
     return user;
   }
- 
 }
