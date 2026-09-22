@@ -4,6 +4,7 @@ import { User } from '@prisma/client';
 import { LocalGuard } from './guards/local.guard';
 import {type Request, type Response} from "express"
 import { Public } from './decorators/public-decorator';
+import { RefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {
@@ -29,5 +30,12 @@ export class AuthController {
     });
 
     return user;
+  }
+
+  @Public()
+  @Post()
+  @UseGuards(RefreshGuard)
+  async refreshToken(){
+    return "refresh token"
   }
 }
