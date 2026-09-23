@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadType } from 'src/types/jwtpayload';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from "bcrypt"
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { type Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -15,31 +16,54 @@ export class AuthService {
     private prisma:PrismaService
   ){}
 
-  async login(user:Omit<User, "password">) {
+  async generateTokens(payload:JwtPayloadType){
+    const [acsessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret:this.configService.getOrThrow<string>("auth.jwtAccessSecret"),
+        expiresIn:this.configService.getOrThrow<string>("auth.jwtAccessExpiresIn") as any
+      }),
+
+      this.jwtService.signAsync(payload, {
+        secret:this.configService.getOrThrow<string>("auth.jwtRefreshSecret"),
+        expiresIn:this.configService.getOrThrow<string>("auth.jwtRefreshExpires") as any
+      })
+    ]);
+
+    return{
+      acsessToken,
+      refreshToken
+    }
+  }
+  
+
+  async login(user:Omit<User, "password">, res:Response) {
     // create payload
     const payload = {sub:user.id, email:user.email, role:user.role}
 
-    // create access token
-    const accessExpiresIn = this.configService.getOrThrow<string>("auth.jwtAccessExpiresIn");
-    const accessSecret = this.configService.getOrThrow<string>("auth.jwtAccessSecret");
-    const token = await this.jwtService.signAsync(payload, {
-      expiresIn:accessExpiresIn as any,
-      secret:accessSecret
+    // generate access and refresh tokens
+    const{acsessToken, refreshToken}=await this.generateTokens(payload);
+
+    // hashed refresh token
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    res.cookie('access_token', acsessToken, {
+      secure:true,
+      httpOnly:true,
+      sameSite:"lax",
+      maxAge:15 * 60 * 1000
     });
 
-    // create refresh token
-    const refreshSecret = this.configService.get<string>("auth.jwtRefreshSecret")
-    const refreshExpiresIn = this.configService.get<string>("auth.jwtRefreshExpires")
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      expiresIn:refreshExpiresIn as any,
-      secret:refreshSecret
+    res.cookie("refresh_token", refreshToken, {
+      secure:true,
+      httpOnly:true,
+      sameSite:"lax",
+      maxAge:7 * 24 * 60 * 60 * 1000
     });
-    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
     return{
       email:user.email,
       role:user.role,
-      token,
+      acsessToken,
       hashedRefreshToken
     };
   }
@@ -58,9 +82,31 @@ export class AuthService {
     return result;
   }
 
-  refreshToken(){
-    
-    return "refresh token"
+  async refreshToken(user:Pick<User, "id"|"email" | "role">, res: Response){
+
+    const payload = {sub:user.id, email:user.email, role:user.role}
+    const {refreshToken:newRefreshToken, acsessToken} = await this.generateTokens(payload);
+
+    const hasedRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+
+    await this.prisma.user.update({where:{id:user.id}, data:{hashedRefreshToken:hasedRefreshToken}});
+
+
+    res.cookie("access_token", acsessToken, {
+      secure:process.env.NODE_ENV === 'production',
+      sameSite:"lax",
+      httpOnly:true,
+      maxAge: 15 * 60 * 1000
+    });
+
+    res.cookie("refresh_token", newRefreshToken, {
+      secure:process.env.NODE_ENV === 'production',
+      sameSite:"lax",
+      httpOnly:true,
+      maxAge: 7 * 24 * 60 * 60* 1000
+    });
+
+    return { message: "Tokens refreshed successfully" };
   }
  
 }
