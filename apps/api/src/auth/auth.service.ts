@@ -108,5 +108,22 @@ export class AuthService {
 
     return { message: "Tokens refreshed successfully" };
   }
+
+  async logout(id:string, res:Response){
+    await this.prisma.user.update({where:{id}, data:{hashedRefreshToken:null}});
+
+    // cookie option
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const, 
+    };
+
+    // clear access token in cookie
+    res.clearCookie("access_token", cookieOptions);
+
+    // clear refresh token in cookkie
+    res.clearCookie("refresh_token", cookieOptions);
+  }
  
 }
