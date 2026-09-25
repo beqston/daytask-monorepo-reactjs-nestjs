@@ -36,7 +36,7 @@ export class AuthService {
   }
   
 
-  async login(user:Omit<User, "password">, res:Response) {
+  async login(user:Pick<User, 'id' | 'email' | 'role'>, res:Response) {
     // create payload
     const payload = {sub:user.id, email:user.email, role:user.role}
 
