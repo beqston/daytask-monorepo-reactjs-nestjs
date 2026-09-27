@@ -31,17 +31,29 @@ import {
 
 describe('AuthService', () => {
   let authService: AuthService;
+  let mockPrismaService: {
+    user: {
+      findUnique: jest.Mock;
+      findFirst: jest.Mock;
+      update: jest.Mock;
+    };
+  };
 
   beforeEach(async () => {
+
+    mockPrismaService = {
+      user: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        update: jest.fn(),
+      },
+    };
     const module = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: JwtService, useValue: { sign: jest.fn(), signAsync: jest.fn() } },
         { provide: ConfigService, useValue: { get: jest.fn() } },
-        {
-          provide: PrismaService,
-          useValue: { user: { findUnique: jest.fn(), findFirst: jest.fn() } },
-        },
+        { provide: PrismaService, useValue: mockPrismaService },
       ],
     }).compile();
 
@@ -52,6 +64,7 @@ describe('AuthService', () => {
     expect(authService).toBeDefined();
   });
 
+  // login method testing
   describe('login', () => {
     const mockUser = { id: "1", email: 'test@test.com', role: Roles.USER };
     let mockResponse: Partial<Response>;
@@ -119,11 +132,12 @@ describe('AuthService', () => {
     });
   });
 
+  // testing validateUser method
   describe('validateUser', () => {
   let prismaService: PrismaService;
 
   beforeEach(() => {
-    prismaService = authService['prisma']; // ან module.get(PrismaService), თუ ცალკე შეინახეთ
+    prismaService = authService['prisma']; 
   });
 
   afterEach(() => {
@@ -231,5 +245,125 @@ describe('AuthService', () => {
       where: { email: 'lookup@test.com' },
     });
   });
-});
+  });
+
+  // testint refresh token
+  describe('refreshToken', () => {
+  const mockUser = {
+    id: "1",
+    email: 'test@test.com',
+    role: Roles.USER,
+  };
+
+  let mockResponse: Partial<Response>;
+
+  beforeEach(() => {
+    mockResponse = {
+      cookie: jest.fn(),
+    };
+
+    jest.spyOn(authService, 'generateTokens').mockResolvedValue({
+      acsessToken: 'mocked-access-token',
+      refreshToken: 'mocked-refresh-token',
+    });
+
+    (bcrypt.hash as jest.Mock).mockResolvedValue('mocked-hashed-refresh-token');
+
+    (mockPrismaService.user.update as jest.Mock).mockResolvedValue({
+      ...mockUser,
+      hashedRefreshToken: 'mocked-hashed-refresh-token',
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should call generateTokens with correct payload', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(authService.generateTokens).toHaveBeenCalledWith({
+      sub: mockUser.id,
+      email: mockUser.email,
+      role: mockUser.role,
+    });
+  });
+
+  it('should hash the new refresh token', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(bcrypt.hash).toHaveBeenCalledWith('mocked-refresh-token', 10);
+  });
+
+  it('should update user with hashed refresh token in database', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockPrismaService.user.update).toHaveBeenCalledWith({
+      where: { id: mockUser.id },
+      data: { hashedRefreshToken: 'mocked-hashed-refresh-token' },
+    });
+  });
+
+  it('should set access_token cookie with correct value and options', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockResponse.cookie).toHaveBeenCalledWith(
+      'access_token',
+      'mocked-access-token',
+      {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
+        maxAge: 15 * 60 * 1000,
+      },
+    );
+  });
+
+  it('should set refresh_token cookie with correct value and options', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockResponse.cookie).toHaveBeenCalledWith(
+      'refresh_token',
+      'mocked-refresh-token',
+      {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      },
+    );
+  });
+
+  it('should call res.cookie exactly twice', async () => {
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockResponse.cookie).toHaveBeenCalledTimes(2);
+  });
+
+  it('should return success message', async () => {
+    const result = await authService.refreshToken(
+      mockUser,
+      mockResponse as Response,
+    );
+
+    expect(result).toEqual({ message: 'Tokens refreshed successfully' });
+  });
+
+  it('should call prisma update before setting cookies', async () => {
+    const callOrder: string[] = [];
+
+    (mockPrismaService.user.update as jest.Mock).mockImplementation(() => {
+      callOrder.push('update');
+      return Promise.resolve({});
+    });
+
+    (mockResponse.cookie as jest.Mock).mockImplementation(() => {
+      callOrder.push('cookie');
+    });
+
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(callOrder).toEqual(['update', 'cookie', 'cookie']);
+  });
+  });
 });
