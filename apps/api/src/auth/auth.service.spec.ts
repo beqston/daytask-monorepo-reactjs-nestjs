@@ -131,6 +131,7 @@ describe('AuthService', () => {
       });
     });
   });
+  
 
   // testing validateUser method
   describe('validateUser', () => {
@@ -279,6 +280,38 @@ describe('AuthService', () => {
     jest.clearAllMocks();
   });
 
+  describe('cookie secure flag based on environment', () => {
+  const originalEnv = process.env.NODE_ENV;
+
+  afterEach(() => {
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it('should set secure: true in production', async () => {
+    process.env.NODE_ENV = 'production';
+
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockResponse.cookie).toHaveBeenCalledWith(
+      'access_token',
+      expect.any(String),
+      expect.objectContaining({ secure: true }),
+    );
+  });
+
+  it('should set secure: false in non-production (e.g. test/dev)', async () => {
+    process.env.NODE_ENV = 'test';
+
+    await authService.refreshToken(mockUser, mockResponse as Response);
+
+    expect(mockResponse.cookie).toHaveBeenCalledWith(
+      'access_token',
+      expect.any(String),
+      expect.objectContaining({ secure: false }),
+    );
+    });
+  });
+
   it('should call generateTokens with correct payload', async () => {
     await authService.refreshToken(mockUser, mockResponse as Response);
 
@@ -365,5 +398,7 @@ describe('AuthService', () => {
 
     expect(callOrder).toEqual(['update', 'cookie', 'cookie']);
   });
+
+  
   });
 });
