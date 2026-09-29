@@ -30,7 +30,9 @@ export class UsersService {
       }
     });
 
-    return newUser;
+    const { password: _, ...result } = newUser;
+
+    return result;
   }
 
   findAll() {
