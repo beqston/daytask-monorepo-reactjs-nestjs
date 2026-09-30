@@ -72,9 +72,9 @@ export default function SignUp(){
 
                 {/* inputs container */}
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-                    <Input onChange={handleChange} type="text" htmlFor="fullName" placehoolder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} />
-                    <Input onChange={handleChange} type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email}/>
-                    <Input onChange={handleChange} type="password" htmlFor="password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} />
+                    <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="[a-zA-Z]+\s+[a-zA-Z]+" />
+                    <Input onChange={handleChange} type="email" htmlFor="email" placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email} pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
+                    <Input onChange={handleChange} type="password" htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}" />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>

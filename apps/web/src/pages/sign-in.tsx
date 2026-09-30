@@ -19,8 +19,8 @@ export default function SignIn(){
 
                 {/* inputs container */}
                 <form>
-                    <Input type="email" htmlFor="email" placehoolder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
-                    <Input type="Password" htmlFor="Password" placehoolder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
+                    <Input type="email" htmlFor="email" placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
+                    <Input type="Password" htmlFor="Password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>
