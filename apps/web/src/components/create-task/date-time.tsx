@@ -12,7 +12,7 @@ export default function TimeDateContainer(){
         const [hoursStr, minutes] = time24.split(":");
         const hours = parseInt(hoursStr, 10);
         const period = hours >= 12 ? "PM" : "AM";
-        const hours12 = hours % 12 || 12; // 0 → 12
+        const hours12 = hours % 12 || 12;
         return `${hours12}:${minutes} ${period}`;
     }
     return(
@@ -39,7 +39,7 @@ export default function TimeDateContainer(){
                             className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0" 
                             type="text" 
                             pattern="^((0?[1-9]|1[0-2]):[0-5][0-9]\s?(?:[Aa][Mm]|[Pp][Mm])|([01]?[0-9]|2[0-3]):[0-5][0-9])$" 
-                            value={time} 
+                            value={formatTime(time)} 
                             onChange={(e)=>setTime(e.target.value)} 
                         />
                     </div>
