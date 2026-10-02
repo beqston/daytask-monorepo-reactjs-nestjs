@@ -31,9 +31,9 @@ model Task{
   id            String @id  @default(uuid())
   title         String
   details       String
-  percentage    String
+  percentage    Int          @default(0)       
   members       String[]
-  time          String
+  time          String       
   date          String
   isCompleted   Boolean?       @default(false)
   author        User           @relation(fields:[authorId], references:[id] ,  onDelete: Cascade)

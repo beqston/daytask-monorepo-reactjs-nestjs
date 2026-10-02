@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [AuthModule, PrismaModule, 
@@ -22,10 +23,11 @@ import { RolesGuard } from './auth/guards/roles.guard';
     }),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'secretKey',
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
-    UsersModule
+    UsersModule,
+    TasksModule
   ],
   controllers: [AppController],
   providers: [AppService,
