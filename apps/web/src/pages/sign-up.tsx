@@ -20,6 +20,7 @@ export default function SignUp(){
     });
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const[passwordType, setPasswordType] = useState("password")
 
     function handleChange(e:React.ChangeEvent<HTMLInputElement>){
         const { name, value } = e.target;
@@ -60,6 +61,10 @@ export default function SignUp(){
         }
     }
 
+    function handleChangeType(){
+        setPasswordType(prev=>prev=="password"?"text":"password")
+    }
+
     return(
         <main className="bg-primary-black-100 p-8 md:p-12 w-full min-h-screen">
             <section className="grid content-start grid-cols-1 lg:w-[40%] m-auto pb-12 md:pb-4 lg:justify-center lg:align-top">
@@ -74,7 +79,7 @@ export default function SignUp(){
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
                     <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="[a-zA-Z]+\s+[a-zA-Z]+" />
                     <Input onChange={handleChange} type="email" htmlFor="email" placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email} pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
-                    <Input onChange={handleChange} type="password" htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}" />
+                    <Input changeType={handleChangeType} onChange={handleChange} type={passwordType} htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}" />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>

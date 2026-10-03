@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envValidationSchema } from './config/env.validation';
 import authConfig from './config/auth.config';
 import { PrismaModule } from './prisma/prisma.module';
@@ -14,30 +14,33 @@ import { RolesGuard } from './auth/guards/roles.guard';
 import { TasksModule } from './tasks/tasks.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, 
+  imports: [
     ConfigModule.forRoot({
-      isGlobal:true,
-      envFilePath:".env",
-      validationSchema:envValidationSchema,
-      load:[authConfig],
+      isGlobal: true,
+      envFilePath: '.env',
+      validationSchema: envValidationSchema,
+      load: [authConfig],
     }),
-    JwtModule.register({
+    JwtModule.registerAsync({
       global: true,
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret:config.getOrThrow<string>("auth.jwtAccessSecret"),
+        signOptions: {
+          expiresIn: config.get<string>('auth.jwtAccessExpiresIn'),
+        } as any,
+      }),
     }),
+    AuthModule,
+    PrismaModule,
     UsersModule,
-    TasksModule
+    TasksModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
-    {
-      provide:APP_GUARD,
-      useClass:JwtAuthGuard
-    },{
-      provide:APP_GUARD,
-      useClass:RolesGuard
-    }
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })
 export class AppModule {}
