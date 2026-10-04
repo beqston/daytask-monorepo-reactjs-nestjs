@@ -16,7 +16,7 @@ export class UsersService {
     const {password, ...userData} =  createUserDto;
 
     // check is email exist
-    const isEmail = await this.prisma.user.findFirst({where:{email:userData.email}});
+    const isEmail = await this.prisma.user.findUnique({where:{email:userData.email}});
     if(isEmail) throw new ConflictException("Email already exist!");
 
     // hashed password
