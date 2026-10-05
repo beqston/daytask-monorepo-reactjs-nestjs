@@ -1,12 +1,13 @@
 import { Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
-import { LocalGuard } from './guards/local.guard';
 import {type Request, type Response} from "express"
 import { Public } from './decorators/public-decorator';
 import { RefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from './decorators/get-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalGuard } from './guards/local.guard';
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {

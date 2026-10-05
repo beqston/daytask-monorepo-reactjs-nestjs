@@ -5,8 +5,51 @@ import lock1 from "/images/lock1.png"
 import showPassword from "/images/show-password.png"
 import { Link } from "react-router-dom";
 import Button from "../components/ui/button";
+import { useState } from "react";
 
 export default function SignIn(){
+    const [error, setError] = useState(false);
+    const [errrorText, setErrorText] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const [formData, setFormData] = useState({
+        email:"",
+        password:""
+    });
+
+    function handleChange(e:React.ChangeEvent<HTMLInputElement>){
+        const { name, value } = e.target;
+        setFormData(prev=>({
+            ...prev,
+            [name]:value
+        }))
+    }
+
+    async function handleLogin(e: React.SubmitEvent<HTMLFormElement>){
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/v1/auth`, {
+                method:"POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body:JSON.stringify(formData),
+            });
+            if(!res.ok){
+                const error = await res.json().catch(()=>({}));
+                throw new Error(error?.message || "Something Wrong");
+            }
+            console.log(formData)
+        } catch (error:any) {
+            setError(true);
+            setErrorText(error);
+        }finally{
+            setLoading(false);
+        }
+    }
+
     return(
         <main className="bg-primary-black-100 p-8 md:p-12 w-full min-h-screen ">
             <section className="grid content-start grid-cols-1 lg:w-[40%] m-auto pb-12 md:pb-4 lg:justify-center lg:align-top">
@@ -18,9 +61,9 @@ export default function SignIn(){
                 <h2 className="text-2xl text-primary-pure-white mt-8">Welcome Back!</h2>
 
                 {/* inputs container */}
-                <form>
-                    <Input type="email" htmlFor="email" placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
-                    <Input type="Password" htmlFor="Password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} />
+                <form onSubmit={(e: React.SubmitEvent<HTMLFormElement>)=>handleLogin(e)}>
+                    <Input onChange={handleChange} type="email" htmlFor="email" value={formData.email} placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} />
+                    <Input onChange={handleChange} type="password" htmlFor="password" value={formData.password} placeholder="Password" text="Password" leftImage={lock1} rightImage={showPassword} />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>
@@ -53,8 +96,9 @@ export default function SignIn(){
                     <p className="text-primary-blue-100">Don’t have an account? </p>
                     <Link className="text-primary-yellow-100" to={'/sign-up'}>Sign Up</Link>
                 </div>
-                
             </section>
+
+
         </main>
 
     )

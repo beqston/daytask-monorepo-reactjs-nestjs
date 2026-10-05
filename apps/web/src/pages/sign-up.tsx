@@ -32,21 +32,18 @@ export default function SignUp(){
 
     async function handleSubmit(e: React.FormEvent){
         e.preventDefault();
-        const BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
         try {
             setLoading(true);
-            const res = await fetch(`${BASE_URL}/api/v1/users`, {
+            const res = await fetch(`/api/v1/users`, {
                 method:"POST",
                 headers: {
                 "Content-Type": "application/json"
-            },
+                },
                 body:JSON.stringify(formData)
             });
 
         if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            
-
             throw new Error(errorData.message[0] || "Something went wrong");
         }
 
@@ -77,9 +74,9 @@ export default function SignUp(){
 
                 {/* inputs container */}
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-                    <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="[a-zA-Z]+\s+[a-zA-Z]+" />
-                    <Input onChange={handleChange} type="email" htmlFor="email" placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email} pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" />
-                    <Input changeType={handleChangeType} onChange={handleChange} type={passwordType} htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}" />
+                    <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="(?=.{1,48}$)[a-zA-Z]+( [a-zA-Z]+)+" title="FullName must contain only Latin letters and at least one space!"/>
+                    <Input onChange={handleChange} type="email" htmlFor="email"  placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email} pattern="(?=.{1,254}$)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,24}" title="please provide valid email! max character must be 254" />
+                    <Input onChange={handleChange} type={passwordType} htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} changeType={handleChangeType} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character! max character must be 128" />
 
                     <p className="flex justify-end mt-1 text-primary-blue-100 text-[14px] ">
                         <Link to={'/reset-password'}>Forgot Password?</Link>
@@ -133,7 +130,6 @@ export default function SignUp(){
                 </div>
 
                 {/* restore password container */}
-
                 <div className="mt-8 flex justify-center gap-1">
                     <p className="text-primary-blue-100">Don’t have an account? </p>
                     <Link className="text-primary-yellow-100" to={'/sign-in'}>Sign In</Link>

@@ -45,16 +45,21 @@ export class AuthService {
 
     // hashed refresh token
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    // save hashed refresh token in database
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { hashedRefreshToken },
+    });
 
     res.cookie('access_token', acsessToken, {
-      secure:true,
+      secure:process.env.NODE_ENV === 'production',
       httpOnly:true,
       sameSite:"lax",
       maxAge:15 * 60 * 1000
     });
 
     res.cookie("refresh_token", refreshToken, {
-      secure:true,
+      secure:process.env.NODE_ENV === 'production',
       httpOnly:true,
       sameSite:"lax",
       maxAge:7 * 24 * 60 * 60 * 1000
