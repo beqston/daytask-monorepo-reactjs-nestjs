@@ -91,11 +91,9 @@ export class AuthService {
 
     const payload = {sub:user.id, email:user.email, role:user.role}
     const {refreshToken:newRefreshToken, acsessToken} = await this.generateTokens(payload);
-
+    // hashed refresh token
     const hasedRefreshToken = await bcrypt.hash(newRefreshToken, 10);
-
     await this.prisma.user.update({where:{id:user.id}, data:{hashedRefreshToken:hasedRefreshToken}});
-
 
     res.cookie("access_token", acsessToken, {
       secure:process.env.NODE_ENV === 'production',
@@ -130,5 +128,4 @@ export class AuthService {
     // clear refresh token in cookkie
     res.clearCookie("refresh_token", cookieOptions);
   }
- 
 }

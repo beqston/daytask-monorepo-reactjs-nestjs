@@ -1,4 +1,4 @@
-import { Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import {type Request, type Response} from "express"
@@ -6,8 +6,8 @@ import { Public } from './decorators/public-decorator';
 import { RefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from './decorators/get-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalGuard } from './guards/local.guard';
+import { type RequestUserType } from 'src/types/request-user';
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {
@@ -36,5 +36,11 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async logout(@GetUser("id") id:string, @Res({passthrough:true}) res:Response){
     return this.authService.logout(id, res)
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  getMe(@GetUser() user:RequestUserType){
+    return user;
   }
 }

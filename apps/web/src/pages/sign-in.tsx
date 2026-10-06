@@ -6,6 +6,8 @@ import showPassword from "/images/show-password.png"
 import { Link } from "react-router-dom";
 import Button from "../components/ui/button";
 import { useState } from "react";
+import { Loading } from "../components/ui/loading";
+import ErrorMessage from "../components/error/error";
 
 export default function SignIn(){
     const [error, setError] = useState(false);
@@ -41,7 +43,6 @@ export default function SignIn(){
                 const error = await res.json().catch(()=>({}));
                 throw new Error(error?.message || "Something Wrong");
             }
-            console.log(formData)
         } catch (error:any) {
             setError(true);
             setErrorText(error);
@@ -98,8 +99,13 @@ export default function SignIn(){
                 </div>
             </section>
 
+            {
+                loading && <Loading />
+            }
 
+            {
+                error && <ErrorMessage text={errrorText} />
+            }
         </main>
-
     )
 }
