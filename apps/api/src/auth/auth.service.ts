@@ -128,4 +128,18 @@ export class AuthService {
     // clear refresh token in cookkie
     res.clearCookie("refresh_token", cookieOptions);
   }
+
+  async findById(id:string){
+    const user = await this.prisma.user.findUnique({where:{id}});
+    //check if doesn't user
+    if(!user) throw new UnauthorizedException("User not found!");
+
+    // return user nececery values
+    
+     return{
+      id:user.id,
+      email:user.email,
+      role:user.role
+     }
+  }
 }

@@ -23,5 +23,4 @@ export class CreateTaskDto {
 
     @IsString()
     subtask?:String
-
 }

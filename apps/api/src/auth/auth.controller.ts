@@ -7,19 +7,16 @@ import { RefreshGuard } from './guards/jwt-refresh.guard';
 import { GetUser } from './decorators/get-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LocalGuard } from './guards/local.guard';
-import { type RequestUserType } from 'src/types/request-user';
 
 @Controller({path:"auth", version:"1"})
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
   @Public()
   @Post()
   @UseGuards(LocalGuard)
   create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
     return this.authService.login(req.user as Omit<User, 'password'>, res);
   }
-
 
   @Public()
   @Post("refresh-token")
@@ -40,7 +37,7 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getMe(@GetUser() user:RequestUserType){
-    return user;
+  getMe(@GetUser("id") id:string){
+    return this.authService.findById(id);
   }
 }
