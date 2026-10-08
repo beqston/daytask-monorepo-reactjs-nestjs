@@ -1,7 +1,7 @@
 export interface User {
-  id: number;
+  id: string;
   email: string;
-  name: string;
+  role: string;
 }
 
 export interface Task {
