@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import CompleteTask from '../components/home/complete-task'
 import ProjectContaiiner from '../components/home/project-container'
 import Navbar from '../components/ui/navbar'
@@ -8,6 +7,8 @@ import InputContainer from '../components/home/input-container'
 import CompleteTaskHead from '../components/home/complete-task-head'
 import CompleteTasksWrapper from '../components/home/complete-tasks-wrapper'
 import OngoingProjectsHead from '../components/home/ongoing-projects-head'
+
+
 export default function Home(){
     return(
        <PagesWrapper>

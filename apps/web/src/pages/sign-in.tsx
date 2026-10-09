@@ -3,13 +3,17 @@ import Input from "../components/ui/input";
 import usertag from "/images/usertag.png"
 import lock1 from "/images/lock1.png"
 import showPassword from "/images/show-password.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/button";
 import { useState } from "react";
 import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { loginUser, logout } from "../store/slices/authSlice";
+import api from "../api/api";
 
 export default function SignIn(){
+    const navigate = useNavigate();
     const [error, setError] = useState(false);
     const [errrorText, setErrorText] = useState("");
     const [loading, setLoading] = useState(false);
@@ -31,18 +35,9 @@ export default function SignIn(){
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch(`/api/v1/auth`, {
-                method:"POST",
-                headers: {
-                "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body:JSON.stringify(formData),
-            });
-            if(!res.ok){
-                const error = await res.json().catch(()=>({}));
-                throw new Error(error?.message || "Something Wrong");
-            }
+            const res = await api.post("/auth/login", formData);
+            useAppDispatch(loginUser());
+            navigate("/home", { replace: true });
         } catch (error:any) {
             setError(true);
             setErrorText(error);

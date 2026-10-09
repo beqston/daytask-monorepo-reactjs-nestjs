@@ -3,16 +3,16 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
-import {type AppDispatch } from "../store/store";
+import { type AppDispatch } from "../store/store";
 import { logout } from "../store/slices/authSlice";
 
-// AxiosRequestConfig extend for _retry property
+// AxiosRequestConfig- for _retry property
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
 const api: AxiosInstance = axios.create({
-  baseURL: "/api",
+  baseURL: "/api/v1",
   withCredentials: true,
 });
 
@@ -23,19 +23,18 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
   api.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error) => {
-      const originalRequest = error.config as CustomAxiosRequestConfig;
+      const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
 
-      // if is not error.config 
       if (!originalRequest) {
         return Promise.reject(error);
       }
 
-      // check is send request on auth endponts
+      // check if would be autth in route
       const isAuthEndpoint =
         originalRequest.url?.includes("/auth/refresh") ||
         originalRequest.url?.includes("/auth/login");
 
-      // send refresh, when is 401 error from server 
+      // if status code is 401 and route is not auth
       if (
         error.response?.status === 401 &&
         !originalRequest._retry &&
@@ -44,10 +43,9 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
         originalRequest._retry = true;
 
         try {
-          // if request is sent, we are waiting result
           if (!refreshPromise) {
-            refreshPromise = axios
-              .post("/api/v1/auth/refresh", null, { withCredentials: true })
+            refreshPromise = api
+              .post("/auth/refresh", null)
               .finally(() => {
                 refreshPromise = null;
               });
@@ -55,9 +53,11 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
 
           await refreshPromise;
 
-          // send request once again
+          // send request again
           return api(originalRequest);
         } catch (refreshError) {
+
+          // if refresh token is not
           store.dispatch(logout());
           return Promise.reject(refreshError);
         }
