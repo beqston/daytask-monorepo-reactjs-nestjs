@@ -2,17 +2,11 @@ import axios from "axios";
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { type User } from '../../../../../packages/types';
 import api from "../../api/api";
-
-interface AuthState{
-    user: User | null,
-    isAuth:boolean,
-    loading:boolean,
-    error:string | null
-}
+import type { AuthState, LoginCredentials } from "../../types/auth-store";
 
 // auth/me request for check user
 export const getAuthMe = createAsyncThunk<User, void, {rejectValue:string}>(
-    "authh/checkout", 
+    "auth/checkout", 
     async(_, {rejectWithValue})=>{
         try {
             const { data } = await api.get("/auth/me");
@@ -36,21 +30,20 @@ export const logoutUser = createAsyncThunk('/auth/logout', async()=>{
 })
 
 // login user
-export const loginUser = createAsyncThunk<User, void, {rejectValue:string}>(
-    "authh/checkout", 
-    async(_, {rejectWithValue})=>{
+export const loginUser = createAsyncThunk<User, LoginCredentials, {rejectValue:string}>(
+    "auth/login", 
+    async(credentials, {rejectWithValue})=>{
         try {
-            const { data } = await api.post("/auth");
+            const { data } = await api.post("/auth/login", credentials);
             return data;
         } catch (err) {
             if(axios.isAxiosError(err)){
-                return rejectWithValue(err.response?.data?.message || "Unauthorized");
+                return rejectWithValue(err.response?.data?.message || "Invalid credentials");
             }
             return rejectWithValue("Uknown error");
         }
     }
 )
-
 
 const initialState:AuthState = {
     isAuth:false,
@@ -93,11 +86,6 @@ const authSlice= createSlice({
             state.user = null;
             state.error = action.payload || "Unauthorized"
         })
-        .addCase(logoutUser.fulfilled, (state)=>{
-            state.user = null;
-            state.isAuth = false;
-            state.loading =false;
-        })
         .addCase(loginUser.pending, (state)=>{
             state.loading=true;
             state.error=null;
@@ -108,11 +96,26 @@ const authSlice= createSlice({
             state.loading= false;
         })
         .addCase(loginUser.rejected, (state)=>{
-            state.error="Login rejected";
+            state.error="Login failed";
             state.loading=false;
             state.user=null;
             state.isAuth=false;
         })
+        .addCase(logoutUser.pending, (state)=>{
+            state.error=null;
+            state.loading=true;
+            state.user = null;
+        })
+        .addCase(logoutUser.fulfilled, (state)=>{
+            state.user = null;
+            state.isAuth = false;
+            state.loading =false;
+        })
+        .addCase(logoutUser.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload as string;
+        })
+        
     },
 })
 

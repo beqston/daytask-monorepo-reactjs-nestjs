@@ -12,7 +12,7 @@ import { LocalGuard } from './guards/local.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Public()
-  @Post()
+  @Post('login')
   @UseGuards(LocalGuard)
   create(@Req() req: Request, @Res({passthrough:true}) res:Response) {
     return this.authService.login(req.user as Omit<User, 'password'>, res);

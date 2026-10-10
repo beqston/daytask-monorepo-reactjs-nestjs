@@ -9,16 +9,22 @@ import useradd from "/images/profile/useradd.png"
 import Input from "../ui/input"
 import Logout from "./logout"
 
-export default function InputsWrapper(){
+
+export interface InputWrapperPropsType{
+    handleLogout: () => Promise<void>;
+}
+
+export default function InputsWrapper({handleLogout}:InputWrapperPropsType){
+
     return(
-        <form method="POST" className="flex flex-col gap-2">
-            <Input htmlFor="username" leftImage={useradd} placehoolder="Fazil Laghari" type="text" rightImage={edit}/>
-            <Input htmlFor="email" leftImage={usertag} placehoolder="fazzzil72@gmail.com" type="email" rightImage={edit}/>
-            <Input htmlFor="password" leftImage={lock} placehoolder="Password" type="password" rightImage={edit}/>
-            <Input htmlFor="mytask" leftImage={task} placehoolder="My Tasks" type="text" rightImage={arrowdown}/>
-            <Input htmlFor="privacy" leftImage={privacy} placehoolder="Privacy" type="text" rightImage={arrowdown}/>
-            <Input htmlFor="setting" leftImage={setting} placehoolder="Setting" type="text" rightImage={arrowdown}/>
-            <Logout />
+        <form className="flex flex-col gap-2">
+            <Input htmlFor="username" leftImage={useradd} placeholder="Fazil Laghari" type="text" rightImage={edit}/>
+            <Input htmlFor="email" leftImage={usertag} placeholder="fazzzil72@gmail.com" type="email" rightImage={edit}/>
+            <Input htmlFor="password" leftImage={lock} placeholder="Password" type="password" rightImage={edit}/>
+            <Input htmlFor="mytask" leftImage={task} placeholder="My Tasks" type="text" rightImage={arrowdown}/>
+            <Input htmlFor="privacy" leftImage={privacy} placeholder="Privacy" type="text" rightImage={arrowdown}/>
+            <Input htmlFor="setting" leftImage={setting} placeholder="Setting" type="text" rightImage={arrowdown}/>
+            <Logout handleLogout={handleLogout}/>
         </form>
     )
 }

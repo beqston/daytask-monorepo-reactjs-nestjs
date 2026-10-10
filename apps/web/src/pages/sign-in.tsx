@@ -9,14 +9,13 @@ import { useState } from "react";
 import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { loginUser, logout } from "../store/slices/authSlice";
-import api from "../api/api";
+import { loginUser } from "../store/slices/authSlice";
 
 export default function SignIn(){
     const navigate = useNavigate();
-    const [error, setError] = useState(false);
+    const dispatch = useAppDispatch();
     const [errrorText, setErrorText] = useState("");
-    const [loading, setLoading] = useState(false);
+    const {error, loading} = useAppSelector(state=>state.auth);
 
     const [formData, setFormData] = useState({
         email:"",
@@ -33,16 +32,11 @@ export default function SignIn(){
 
     async function handleLogin(e: React.SubmitEvent<HTMLFormElement>){
         e.preventDefault();
-        setLoading(true);
         try {
-            const res = await api.post("/auth/login", formData);
-            useAppDispatch(loginUser());
+            await dispatch(loginUser(formData)).unwrap();
             navigate("/home", { replace: true });
         } catch (error:any) {
-            setError(true);
             setErrorText(error);
-        }finally{
-            setLoading(false);
         }
     }
 
