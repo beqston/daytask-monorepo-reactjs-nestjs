@@ -1,3 +1,4 @@
+import AddMembers from "./add-members";
 import AddNewInput from "./add-new-input";
 import TimeDateContainer from "./date-time";
 import TaskDetailsContainer from "./task-details";
@@ -9,6 +10,7 @@ export default function TaskForm(){
             <form action="/" method="POST">
                 <TaskTitleContainer />
                 <TaskDetailsContainer />
+                <AddMembers />
                 <TimeDateContainer />
                 <AddNewInput />
             </form>

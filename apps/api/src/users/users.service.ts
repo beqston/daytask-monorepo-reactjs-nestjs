@@ -35,8 +35,20 @@ export class UsersService {
     return result;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(currentUserId:string) {
+    return this.prisma.user.findMany({
+      where:{
+        id:{
+          not:currentUserId
+        }
+      },
+      select:{
+        id:true,
+        email:true,
+        imageUrl:true,
+        fullName:true
+      }
+    });
   }
 
 }

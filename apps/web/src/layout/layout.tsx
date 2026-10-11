@@ -4,7 +4,6 @@ import { useAppDispatch } from "../store/hooks";
 import { getAuthMe } from "../store/slices/authSlice";
 
 export default function Layout(){
-
     const dispatch = useAppDispatch();
 
     useEffect(() => {

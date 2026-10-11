@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Public } from 'src/auth/decorators/public-decorator';
 import { LocalGuard } from 'src/auth/guards/local.guard';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 @Controller({path:'users', version:"1"})
 export class UsersController {
@@ -18,8 +19,8 @@ export class UsersController {
 
   
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@GetUser("id") id:string) {
+    return this.usersService.findAll(id);
   }
 
   // @Get(':id')

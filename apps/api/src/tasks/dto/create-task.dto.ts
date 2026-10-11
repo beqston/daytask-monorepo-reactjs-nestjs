@@ -11,10 +11,6 @@ export class CreateTaskDto {
 
     @IsNotEmpty()
     @IsString()
-    percentage!:String
-
-    @IsNotEmpty()
-    @IsString()
     time!:String
 
     @IsNotEmpty()

@@ -56,7 +56,6 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
           // send request again
           return api(originalRequest);
         } catch (refreshError) {
-
           // if refresh token is not
           store.dispatch(logout());
           return Promise.reject(refreshError);
