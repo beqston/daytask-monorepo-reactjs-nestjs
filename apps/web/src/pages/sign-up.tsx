@@ -10,6 +10,7 @@ import Button from "../components/ui/button";
 import { useState } from "react";
 import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
+import api from "../api/api";
 
 export default function SignUp(){
     const navigate = useNavigate();
@@ -34,22 +35,16 @@ export default function SignUp(){
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await fetch(`/api/v1/users`, {
-                method:"POST",
-                headers: {
-                "Content-Type": "application/json"
-                },
-                body:JSON.stringify(formData)
-            });
+            await api.post('/users', formData);
+            navigate('/sign-in');
 
-        if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.message[0] || "Something went wrong");
-        }
-
-            navigate('/sign-in')
         } catch (err:any) {
-            setErrorMessage(err.message);
+            const responseMessage = err.response?.data?.message;
+            const errorMessage = Array.isArray(responseMessage) 
+            ? responseMessage[0] 
+            : (responseMessage || err.message || "Something went wrong");
+            
+            setErrorMessage(errorMessage);
         }finally{
             setLoading(false);
             setTimeout(()=>{

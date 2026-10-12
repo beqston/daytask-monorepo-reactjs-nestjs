@@ -7,7 +7,10 @@ export default function Layout(){
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(getAuthMe());
+        const isLoggedIn = localStorage.getItem("isLoggedIn");
+        if(isLoggedIn){
+            dispatch(getAuthMe());
+        }
     }, [dispatch]);
     
     return <Outlet />

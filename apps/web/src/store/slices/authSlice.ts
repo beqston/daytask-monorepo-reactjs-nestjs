@@ -47,7 +47,7 @@ export const loginUser = createAsyncThunk<User, LoginCredentials, {rejectValue:s
 
 const initialState:AuthState = {
     isAuth:false,
-    loading:true,
+    loading:false,
     error:null,
     user:null
 }
@@ -84,7 +84,8 @@ const authSlice= createSlice({
             state.isAuth=false;
             state.loading=false;
             state.user = null;
-            state.error = action.payload || "Unauthorized"
+            state.error = action.payload || "Unauthorized";
+            localStorage.removeItem("isLoggedIn");
         })
         .addCase(loginUser.pending, (state)=>{
             state.loading=true;

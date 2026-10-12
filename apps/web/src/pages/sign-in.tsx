@@ -34,6 +34,7 @@ export default function SignIn(){
         e.preventDefault();
         try {
             await dispatch(loginUser(formData)).unwrap();
+            localStorage.setItem("isLoggedIn", "true");
             navigate("/home", { replace: true });
         } catch (error:any) {
             setErrorText(error);
