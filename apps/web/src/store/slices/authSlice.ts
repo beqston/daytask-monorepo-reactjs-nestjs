@@ -21,11 +21,17 @@ export const getAuthMe = createAsyncThunk<User, void, {rejectValue:string}>(
 )
 
 // Logout for remove cookie
-export const logoutUser = createAsyncThunk('/auth/logout', async()=>{
+export const logoutUser = createAsyncThunk<void, void, {rejectValue:string}>('/auth/logout', async(_, {rejectWithValue})=>{
     try {
         await api.post('/auth/logout');
     } catch (err) {
-        console.log("Logout error:", err)
+        if(axios.isAxiosError(err)){
+            const message = err.response?.data?.message;
+            const errorMessage =Array.isArray(message)? message[0]:message;
+            return rejectWithValue(errorMessage);
+        }
+
+        return rejectWithValue("Unknown error");
     }
 })
 
@@ -62,12 +68,6 @@ const authSlice= createSlice({
             state.error = null;
             state.loading = false;
 
-        },
-        login:(state, action)=>{
-            state.loading =false;
-            state.isAuth = true;
-            state.user = action.payload;
-            state.error = null;
         },
         logout(state){
             state.error=null;
@@ -127,5 +127,5 @@ const authSlice= createSlice({
     },
 })
 
-export const { logout, login, setUser} =authSlice.actions;
+export const { logout, setUser} =authSlice.actions;
 export default authSlice.reducer;

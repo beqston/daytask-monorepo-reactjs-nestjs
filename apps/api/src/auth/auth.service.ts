@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 import bcrypt from "bcrypt"
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { type Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +24,7 @@ export class AuthService {
 
       this.jwtService.signAsync(payload, {
         secret:this.configService.getOrThrow<string>("auth.jwtRefreshSecret"),
-        expiresIn:this.configService.getOrThrow<string>("auth.jwtRefreshExpiresIn") as any
+        expiresIn:this.configService.getOrThrow<string>("auth.jwtRefreshExpires") as any
       })
     ]);
 
@@ -35,11 +34,9 @@ export class AuthService {
     }
   }
   
-
-  async login(user:Pick<User, 'id' | 'email' | 'role'>, res:Response) {
+  async login(user:Pick<User, 'id' | 'email' | 'role'>) {
     // create payload
     const payload = {sub:user.id, email:user.email, role:user.role}
-
     // generate access and refresh tokens
     const{acsessToken, refreshToken}=await this.generateTokens(payload);
 
@@ -50,26 +47,14 @@ export class AuthService {
       where: { id: user.id },
       data: { hashedRefreshToken },
     });
-
-    res.cookie('access_token', acsessToken, {
-      secure:process.env.NODE_ENV === 'production',
-      httpOnly:true,
-      sameSite:"lax",
-      maxAge:15 * 60 * 1000
-    });
-
-    res.cookie("refresh_token", refreshToken, {
-      secure:process.env.NODE_ENV === 'production',
-      httpOnly:true,
-      sameSite:"lax",
-      maxAge:7 * 24 * 60 * 60 * 1000
-    });
-
     return{
-      email:user.email,
-      role:user.role,
+      user:{
+        id:user.id,
+        email:user.email,
+        role:user.role,
+      },
       acsessToken,
-      hashedRefreshToken
+      refreshToken
     };
   }
 
@@ -87,46 +72,23 @@ export class AuthService {
     return result;
   }
 
-  async refreshToken(user:Pick<User, "id"|"email" | "role">, res: Response){
+   async refreshToken(user:Pick<User, "id"|"email" | "role">){
 
     const payload = {sub:user.id, email:user.email, role:user.role}
-    const {refreshToken:newRefreshToken, acsessToken} = await this.generateTokens(payload);
-    // hashed refresh token
-    const hasedRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+    const {refreshToken, acsessToken} = await this.generateTokens(payload);
+
+    const hasedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
     await this.prisma.user.update({where:{id:user.id}, data:{hashedRefreshToken:hasedRefreshToken}});
 
-    res.cookie("access_token", acsessToken, {
-      secure:process.env.NODE_ENV === 'production',
-      sameSite:"lax",
-      httpOnly:true,
-      maxAge: 15 * 60 * 1000
-    });
-
-    res.cookie("refresh_token", newRefreshToken, {
-      secure:process.env.NODE_ENV === 'production',
-      sameSite:"lax",
-      httpOnly:true,
-      maxAge: 7 * 24 * 60 * 60* 1000
-    });
-
-    return { message: "Tokens refreshed successfully" };
+    return { 
+      acsessToken,
+      refreshToken
+     };
   }
 
-  async logout(id:string, res:Response){
-    await this.prisma.user.update({where:{id}, data:{hashedRefreshToken:null}});
-
-    // cookie option
-    const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax' as const, 
-    };
-
-    // clear access token in cookie
-    res.clearCookie("access_token", cookieOptions);
-
-    // clear refresh token in cookkie
-    res.clearCookie("refresh_token", cookieOptions);
+  async logout(id:string){
+    return await this.prisma.user.update({where:{id}, data:{hashedRefreshToken:null}});
   }
 
   async findById(id:string){
