@@ -1,14 +1,18 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from "bcrypt";
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import {type Response } from 'express';
 
 
 @Injectable()
 export class UsersService {
   constructor(
-    private prisma:PrismaService  
+    private prisma:PrismaService, 
+    private configService:ConfigService,
+    private jwtService:JwtService
   ){}
 
   async create(createUserDto: CreateUserDto) {
@@ -32,7 +36,25 @@ export class UsersService {
 
     const { password: _, ...result } = newUser;
 
-    return result;
+    const payload = {sub:newUser.id, email:newUser.email, role:newUser.role};
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload, {
+        secret:this.configService.getOrThrow<string>("auth.jwtAccessSecret"),
+        expiresIn:this.configService.getOrThrow<string>("auth.jwtAccessExpiresIn") as any
+      }),
+
+      this.jwtService.signAsync(payload, {
+        secret:this.configService.getOrThrow<string>("auth.jwtRefreshSecret"),
+        expiresIn: this.configService.getOrThrow<string>("auth.jwtRefreshExpiresIn") as any
+      })
+    ]);
+
+    return {
+      user:result,
+      accessToken,
+      refreshToken
+    };
   }
 
   findAll(currentUserId:string) {

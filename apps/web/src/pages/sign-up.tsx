@@ -11,9 +11,12 @@ import { useState } from "react";
 import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
 import api from "../api/api";
+import { useAppDispatch } from "../store/hooks";
+import { setUser } from "../store/slices/authSlice";
 
 export default function SignUp(){
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     const [formData, setFormData] = useState({
         fullName:"",
         email:"",
@@ -35,9 +38,10 @@ export default function SignUp(){
         e.preventDefault();
         try {
             setLoading(true);
-            await api.post('/users', formData);
-            navigate('/sign-in');
-
+            const response = await api.post('/users', formData);
+            localStorage.setItem("isLoggedIn", "true");
+            dispatch(setUser(response.data));
+            navigate('/home', {replace:true});
         } catch (err:any) {
             const responseMessage = err.response?.data?.message;
             const errorMessage = Array.isArray(responseMessage) 
