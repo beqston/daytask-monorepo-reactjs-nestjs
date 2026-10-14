@@ -4,7 +4,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from "bcrypt";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import {type Response } from 'express';
 
 
 @Injectable()

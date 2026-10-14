@@ -53,7 +53,7 @@ export const loginUser = createAsyncThunk<User, LoginCredentials, {rejectValue:s
 
 const initialState:AuthState = {
     isAuth:false,
-    loading:false,
+    loading:!!localStorage.getItem("isLoggedIn"),
     error:null,
     user:null
 }

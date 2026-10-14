@@ -31,7 +31,7 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
 
       // check if would be autth in route
       const isAuthEndpoint =
-        originalRequest.url?.includes("/auth/refresh") ||
+        originalRequest.url?.includes("/auth/refresh-token") ||
         originalRequest.url?.includes("/auth/login");
 
       // if status code is 401 and route is not auth

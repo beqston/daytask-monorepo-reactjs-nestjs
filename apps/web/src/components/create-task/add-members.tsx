@@ -1,4 +1,4 @@
-import GetUser from "./get-user"
+import UsersList from "./users-list"
 import addsquare from "/images/create-task/addsquare.png"
 
 export default function AddMembers(){
@@ -15,7 +15,7 @@ export default function AddMembers(){
                 </div>
             </div>
 
-            <GetUser />
+            <UsersList />
         </div>
     )
 }
