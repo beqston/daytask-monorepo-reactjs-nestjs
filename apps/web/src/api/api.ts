@@ -45,7 +45,7 @@ export const setupInterceptors = (store: { dispatch: AppDispatch }): void => {
         try {
           if (!refreshPromise) {
             refreshPromise = api
-              .post("/auth/refresh", null)
+              .post("/auth/refresh-token", null)
               .finally(() => {
                 refreshPromise = null;
               });

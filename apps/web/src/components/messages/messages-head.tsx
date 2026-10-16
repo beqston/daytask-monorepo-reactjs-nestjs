@@ -1,10 +1,12 @@
+import { useNavigate } from 'react-router-dom'
 import arrow from '/images/arrowleft.png'
 import edit from '/images/edit.png'
 
 export default function MessagesHead(){
+    const navigate = useNavigate();
     return(
         <div className="flex justify-between pt-4 items-center ">
-            <div className="w-6 h-6">
+            <div onClick={()=>navigate(-1)} className="w-6 h-6 cursor-pointer">
                 <img src={arrow} className="object-fill w-fulll h-full" alt="arrow" />
             </div>
             <h1 className="text-primary-pure-white text-2xl">Messages</h1>

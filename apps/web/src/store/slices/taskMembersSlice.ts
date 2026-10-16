@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialStateType{
     members:string[],
@@ -7,12 +7,15 @@ interface InitialStateType{
 const initialState:InitialStateType = {
     members:[],
 }
-export const taskMembersSlice = createSlice({
+
+const taskMembersSlice = createSlice({
     name:"tasksMembers",
     initialState:initialState,
     reducers:{
-        addMember:(state, action)=>{
-            state.members.push(action.payload);
+        addMember:(state, action:PayloadAction<string>)=>{
+            if(!state.members.includes(action.payload)){
+                state.members.push(action.payload);
+            }
         }
     }
 })

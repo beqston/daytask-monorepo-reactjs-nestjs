@@ -5,7 +5,7 @@ interface MessageWrapper{
     lastMessagesTime:string;
 }
 
-export default function GroupMessagesWrapper({groupName, imageUrl,lastMessage, lastMessagesTime}:MessageWrapper){
+export default function GroupMessagesWrapper({groupName, imageUrl, lastMessage, lastMessagesTime}:MessageWrapper){
     return(
         <section className="flex justify-between items-center px-8 py-4">
             <div className=" grid grid-cols-[47px_8fr] gap-x-4 pr-3">
