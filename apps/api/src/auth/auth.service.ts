@@ -34,7 +34,7 @@ export class AuthService {
     }
   }
   
-  async login(user:Pick<User, 'id' | 'email' | 'role'>) {
+  async login(user:Pick<User, 'id' | 'email' | 'role' | 'fullName' | 'imageUrl'>) {
     // create payload
     const payload = {sub:user.id, email:user.email, role:user.role}
     // generate access and refresh tokens
@@ -52,6 +52,8 @@ export class AuthService {
         id:user.id,
         email:user.email,
         role:user.role,
+        fullName:user.fullName,
+        imageUrl:user.imageUrl
       },
       acsessToken,
       refreshToken
@@ -97,11 +99,12 @@ export class AuthService {
     if(!user) throw new UnauthorizedException("User not found!");
 
     // return user nececery values
-    
      return{
       id:user.id,
       email:user.email,
-      role:user.role
+      role:user.role,
+      fullName:user.fullName,
+      imageUrl:user.imageUrl
      }
   }
 }

@@ -8,6 +8,8 @@ import task from "/images/profile/task.png"
 import useradd from "/images/profile/useradd.png"
 import Input from "../ui/input"
 import Logout from "./logout"
+import { useAppSelector } from "../../store/hooks"
+import { useState } from "react"
 
 
 export interface InputWrapperPropsType{
@@ -15,12 +17,18 @@ export interface InputWrapperPropsType{
 }
 
 export default function InputsWrapper({handleLogout}:InputWrapperPropsType){
+    const {user} = useAppSelector(state=>state.auth);
+    const [userObj, setUserObj] = useState({
+        fullName:user?.fullName,
+        email:user?.email,
+        password:""
+    })
 
     return(
         <form className="flex flex-col gap-2">
-            <Input htmlFor="username" leftImage={useradd} placeholder="Fazil Laghari" type="text" rightImage={edit}/>
-            <Input htmlFor="email" leftImage={usertag} placeholder="fazzzil72@gmail.com" type="email" rightImage={edit}/>
-            <Input htmlFor="password" leftImage={lock} placeholder="Password" type="password" rightImage={edit}/>
+            <Input onChange={(e)=>setUserObj(prev=>{return{...prev, fullName:e.target.value}})} htmlFor="username" leftImage={useradd} placeholder="Fullname" value={userObj.fullName} type="text" rightImage={edit}/>
+            <Input onChange={(e)=>setUserObj(prev=>{return{...prev, email:e.target.value}})}  htmlFor="email" leftImage={usertag} placeholder="fazzzil72@gmail.com" type="email" value={userObj.email} rightImage={edit}/>
+            <Input onChange={(e)=>setUserObj(prev=>{return{...prev, password:e.target.value}})} htmlFor="password" leftImage={lock} placeholder="Password" value={userObj.password} type="password" rightImage={edit}/>
             <Input htmlFor="mytask" leftImage={task} placeholder="My Tasks" type="text" rightImage={arrowdown}/>
             <Input htmlFor="privacy" leftImage={privacy} placeholder="Privacy" type="text" rightImage={arrowdown}/>
             <Input htmlFor="setting" leftImage={setting} placeholder="Setting" type="text" rightImage={arrowdown}/>
