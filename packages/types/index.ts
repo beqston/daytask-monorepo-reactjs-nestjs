@@ -3,7 +3,7 @@ export interface User {
   email: string,
   role: string,
   fullName:string,
-  imageUrl:string,
+  imageUrl:string | null,
 }
 
 export interface Task {

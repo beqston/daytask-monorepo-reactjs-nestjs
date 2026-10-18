@@ -1,13 +1,14 @@
 import profile1 from "/images/profile1.png"
 import addsquare from "/images/addsquare.png"
+import type { User } from "@daytask/types";
 
 interface UserListPropsType{
-    id:string,
+    user:Pick<User, 'id' | 'fullName' | 'imageUrl'>,
     fullName:string,   
-    handleClick:(id:string)=>void; 
+    handleClick:(user:Pick<User, 'id' | 'fullName' | 'imageUrl'>)=>void; 
 }
 
-export default function UserList({fullName, id, handleClick}:UserListPropsType){
+export default function UserList({fullName, user, handleClick}:UserListPropsType){
 
     return(
         <div className="flex w-full justify-between border-2 border-primary-blue-100 p-4">
@@ -18,7 +19,7 @@ export default function UserList({fullName, id, handleClick}:UserListPropsType){
                 <p>{fullName}</p>
             </div>
 
-            <button onClick={()=>handleClick(id)} type="button" className="w-8 h-8">
+            <button onClick={()=>handleClick(user)} type="button" className="w-8 h-8">
                 <img className="object-fill w-full h-full" src={addsquare} alt="add-member"/>
             </button>
         </div>

@@ -9,9 +9,6 @@ export class TasksService {
     private prisma:PrismaService,
   ){}
   async create(createTaskDto: CreateTaskDto) {
-    // const task = await this.prisma.task.create({
-    //   data:createTaskDto
-    // })
     return 'This action adds a new task';
   }
 

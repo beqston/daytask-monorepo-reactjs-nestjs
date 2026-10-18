@@ -1,15 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import api from "../../api/api";
 import UserList from "./user-list";
-import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { useAppDispatch } from "../../store/hooks";
 import { addMember } from "../../store/slices/taskMembersSlice";
+import type { User } from "@daytask/types";
 
-interface UserType {
-    id:string
-    email: string,
-    imageUrl: string | null,
-    fullName: string
-}
 
 interface UserListsPropsType{
     handleShowUsersList(): void,
@@ -18,12 +13,13 @@ interface UserListsPropsType{
 }
 
 export default function UsersList({handleShowUsersList, showUsersList, setShowUsersList}:UserListsPropsType){
-    const [users, setUsers] = useState<UserType[] | []>([]);
+    const [users, setUsers] = useState<User[] | []>([]);
     const containerRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
 
-    function handleAddMember(id:string){
-        dispatch(addMember(id));
+    function handleAddMember(user:Pick<User, 'id' | 'fullName' | 'imageUrl'>){
+        dispatch(addMember(user));
+        setShowUsersList(false);
     }
 
     async function getAllUsers(){
@@ -60,7 +56,7 @@ export default function UsersList({handleShowUsersList, showUsersList, setShowUs
                     {
                         users.map(user=>{
                             return(
-                                <UserList id={user.id} handleClick={handleAddMember} key={user.id} fullName={user.fullName} />
+                                <UserList user={user} handleClick={handleAddMember} key={user.id} fullName={user.fullName} />
                             )
                         })
                     }
