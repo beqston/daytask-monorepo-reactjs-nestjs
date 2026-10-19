@@ -5,7 +5,7 @@ import { useState } from "react";
 export default function TimeDateContainer(){
 
     const [time, setTime] = useState("10:30")
-    const [date, setDate] = useState("15/11/2022")
+    const [date, setDate] = useState("2022-10-18")
 
     function formatTime(time24: string) {
         if (!time24) return "";
@@ -14,6 +14,12 @@ export default function TimeDateContainer(){
         const period = hours >= 12 ? "PM" : "AM";
         const hours12 = hours % 12 || 12;
         return `${hours12}:${minutes} ${period}`;
+    }
+
+    function formatDate(date:string){
+        if(!date) return "";
+        const [year, month, day] = date.split("-");
+        return `${day}/${month}/${year}`
     }
     return(
         <>
@@ -54,7 +60,7 @@ export default function TimeDateContainer(){
                         </label>
                         <input 
                             type="text" 
-                            value={date} 
+                            value={formatDate(date)} 
                             onChange={(e)=>setDate(e.target.value)} 
                             className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0"
                             pattern="^(\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])|(0[1-9]|[12][0-9]|3[01])[\/.-](0[1-9]|1[0-2])[\/.-]\d{4})$"
