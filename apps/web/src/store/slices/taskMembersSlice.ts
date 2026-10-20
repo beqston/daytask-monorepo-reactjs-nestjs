@@ -23,10 +23,13 @@ const taskMembersSlice = createSlice({
         },
         removeMember: (state, action:PayloadAction<string>)=>{
             state.members = state.members.filter(m => m.id != action.payload)
+        },
+        clearMembers(state){
+            state.members = [];
         }
     }
 })
 
 
-export const { addMember, removeMember } = taskMembersSlice.actions;
+export const { addMember, removeMember, clearMembers } = taskMembersSlice.actions;
 export default taskMembersSlice.reducer;

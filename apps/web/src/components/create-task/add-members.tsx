@@ -1,5 +1,4 @@
-import { Suspense, useEffect, useState } from "react"
-import UsersList from "./users-list"
+import { lazy, Suspense, useState } from "react"
 import addsquare from "/images/create-task/addsquare.png"
 import { Loading } from "../ui/loading";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -7,6 +6,8 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import profile1 from '/images/profile1.png'
 import closesquare from '/images/create-task/closesquare.png'
 import { removeMember } from "../../store/slices/taskMembersSlice";
+
+const UsersList = lazy(() => import("./users-list"));
 
 export default function AddMembers(){
     const [showUsersList, setShowUsersList] = useState(false);
@@ -30,7 +31,7 @@ export default function AddMembers(){
             <div className="flex gap-x-2">
                 {
                     members.map((member)=>{
-                        const fullName = member.fullName.split(" ")[0];
+                        const firstName = member.fullName.split(" ")[0];
                         return(
 
                             <div key={member.id} className="flex gap-1 bg-light-blue-100 p-2 items-center">
@@ -38,7 +39,7 @@ export default function AddMembers(){
                                     <div className="w-5 h-5 rounded-full">
                                         <img className="object-fill w-full h-full" src={member.imageUrl?member.imageUrl:profile1} alt="profile-image" />
                                     </div>
-                                    <p className="text-primary-pure-white">{fullName}</p>
+                                    <p className="text-primary-pure-white">{firstName}</p>
                                 </div>
 
                                 <div className="w-5 h-5 ml-4 cursor-pointer">

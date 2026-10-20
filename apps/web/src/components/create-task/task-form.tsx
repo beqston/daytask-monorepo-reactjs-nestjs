@@ -14,16 +14,19 @@ type TaskFormState = {
     subtask?:string;
 }
 
-const initialState:TaskFormState = {
-    title:"",
-    details:"",
-    time:"10:30",
-    date:"2022-10-18",
-    subtask:""
+function getInitialState():TaskFormState{
+    const now = new Date();
+    return{
+      title:"",
+      details:"",
+      time:now.toTimeString().slice(0, 5),
+      date:now.toLocaleDateString("en-CA"),
+      subtask:""
+    }
 } 
 
 export default function TaskForm(){
-    const [formState, setFormState] = useState(initialState);
+    const [formState, setFormState] = useState(getInitialState);
     const {members} = useAppSelector(state=>state.tasksmembers);
     const membersIds = members.map(m=>m.id);
     
@@ -37,7 +40,7 @@ export default function TaskForm(){
                 <TaskTitleContainer value={formState.title} onChange={(v)=>updateField("title", v)} />
                 <TaskDetailsContainer value={formState.details} onChange={(v)=>updateField("details", v)} />
                 <AddMembers />
-                <TimeDateContainer />
+                <TimeDateContainer date={formState.date} onDateChange={(v)=>updateField("date", v)} time={formState.time} onTimeChange={(v=>updateField("time", v))} />
                 <AddNewInput />
             </form>
         </section>

@@ -1,12 +1,14 @@
 import clock from "/images/create-task/clock.png"
 import calendar from "/images/create-task/calendar.png"
-import { useState } from "react";
 
-export default function TimeDateContainer(){
+interface TimeDateContainerProps {
+    date: string;
+    time: string; 
+    onDateChange: (value: string) => void;
+    onTimeChange: (value: string) => void;
+}
 
-    const [time, setTime] = useState("10:30")
-    const [date, setDate] = useState("2022-10-18")
-
+export default function TimeDateContainer({ date, time, onDateChange, onTimeChange }: TimeDateContainerProps) {
     function formatTime(time24: string) {
         if (!time24) return "";
         const [hoursStr, minutes] = time24.split(":");
@@ -16,59 +18,57 @@ export default function TimeDateContainer(){
         return `${hours12}:${minutes} ${period}`;
     }
 
-    function formatDate(date:string){
-        if(!date) return "";
+    function formatDate(date: string) {
+        if (!date) return "";
         const [year, month, day] = date.split("-");
-        return `${day}/${month}/${year}`
+        return `${day}/${month}/${year}`;
     }
-    return(
-        <>
-            {/*time & date container */}
-            <div className="flex flex-col text-primary-pure-white gap-y-3 mt-7">
-                <p className="text-[16px] md:text-2xl font-medium">Time & Date</p>
 
-                <div className="grid grid-cols-2 gap-x-4">
-                    <div className="flex">
-                        <label htmlFor="clock" className="bg-primary-yellow-100 w-10 h-10 flex justify-center items-center  relative">
-                            <div className="w-6 h-6 ">
-                                <img src={clock}  alt="clock" className="object-fill w-full h-full top-0 left-0 z-10"/>
-                            </div>
-                            <input 
-                                type="time" 
-                                name="clock" 
-                                id="clock" 
-                                className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer" 
-                                onChange={(e)=>setTime(e.target.value)}
-                            />
-                        </label>
-                        <input 
-                            className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0" 
-                            type="text" 
-                            pattern="^((0?[1-9]|1[0-2]):[0-5][0-9]\s?(?:[Aa][Mm]|[Pp][Mm])|([01]?[0-9]|2[0-3]):[0-5][0-9])$" 
-                            value={formatTime(time)} 
-                            onChange={(e)=>setTime(e.target.value)} 
+    return (
+        <div className="flex flex-col text-primary-pure-white gap-y-3 mt-7">
+            <p className="text-[16px] md:text-2xl font-medium">Time & Date</p>
+
+            <div className="grid grid-cols-2 gap-x-4">
+                {/* time */}
+                <div className="flex">
+                    <label htmlFor="clock" className="bg-primary-yellow-100 w-10 h-10 flex justify-center items-center relative">
+                        <img src={clock} alt="clock" className="w-6 h-6 object-fill" />
+                        <input
+                            type="time"
+                            id="clock"
+                            value={time}
+                            onChange={(e) => onTimeChange(e.target.value)}
+                            className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer"
                         />
-                    </div>
-
-
-                    <div className="flex">
-                        <label htmlFor="date" className="bg-primary-yellow-100 w-10 h-10 flex justify-center items-center relative">
-                            <div className="w-6 h-6 ">
-                                <img src={calendar}  alt="calendar" className="object-fill w-full h-full top-0 left-0 z-10"/>
-                            </div>
-                            <input type="date" name="date" id="date" className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer" onChange={(e)=>setDate(e.target.value)}/>
-                        </label>
-                        <input 
-                            type="text" 
-                            value={formatDate(date)} 
-                            onChange={(e)=>setDate(e.target.value)} 
-                            className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0"
-                            pattern="^(\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])|(0[1-9]|[12][0-9]|3[01])[\/.-](0[1-9]|1[0-2])[\/.-]\d{4})$"
-                        />
-                    </div>
+                    </label>
+                    <input
+                        type="text"
+                        value={formatTime(time)}
+                        readOnly
+                        className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0"
+                    />
                 </div>
 
+                {/* date */}
+                <div className="flex">
+                    <label htmlFor="date" className="bg-primary-yellow-100 w-10 h-10 flex justify-center items-center relative">
+                        <img src={calendar} alt="calendar" className="w-6 h-6 object-fill" />
+                        <input
+                            type="date"
+                            id="date"
+                            value={date}
+                            onChange={(e) => onDateChange(e.target.value)}
+                            className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer"
+                        />
+                    </label>
+                    <input
+                        type="text"
+                        value={formatDate(date)}
+                        readOnly
+                        className="w-full min-h-full bg-light-blue-100 flex items-center pl-2 outline-0"
+                    />
+                </div>
             </div>
-        </>
-    )
+        </div>
+    );
 }
