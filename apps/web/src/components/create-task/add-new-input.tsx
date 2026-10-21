@@ -1,6 +1,7 @@
 import { useState } from "react"
+import type { TextFieldProps } from "../../types/form";
 
-export default function AddNewInput(){
+export default function AddNewInput({onChange, value}:TextFieldProps){
     const [addInput, setAddInput] = useState(false);
     const [isNewInput, setIsNewInput] = useState(false)
     function handleAddNew(){
@@ -23,6 +24,8 @@ export default function AddNewInput(){
                     <div className="text-primary-pure-white flex flex-col gap-y-2 w-full">
                         <label htmlFor="subtask" className="text-xl font-medium">Sub Task</label>
                         <input 
+                            onChange={(e)=>onChange(e.target.value)}
+                            value={value}
                             className="bg-light-blue-100 outline-0 p-4 font-normal text-xl placeholder:text-primary-pure-white" 
                             type="text" 
                             id="subtask" 
