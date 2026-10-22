@@ -1,22 +1,32 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateTaskDto {
     @IsNotEmpty()
     @IsString()
-    title!:String
+    title!:string
 
     @IsNotEmpty()
     @IsString()
-    details!:String
+    details!:string
 
     @IsNotEmpty()
     @IsString()
-    time!:String
+    time!:string
 
     @IsNotEmpty()
     @IsString()
-    date!:String
+    date!:string
 
     @IsString()
-    subtask?:String
+    subtask?:string
+
+    @IsInt()
+    @IsOptional()
+    @Type(() => Number)
+    percentage?: number;
+
+    @IsArray()
+    @IsString({each:true})
+    memberIds!:string[]
 }

@@ -8,9 +8,36 @@ export class TasksService {
   constructor(
     private prisma:PrismaService,
   ){}
-  async create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+
+  async createTask(createTaskDto: CreateTaskDto, authorId:string) {
+    const {memberIds, ...rest} = createTaskDto;
+    return this.prisma.task.create({
+      data:{
+        ...rest,
+        authorId,
+        members:{
+            connect: memberIds?.map((id) => ({ id })),
+        }
+      },
+      include:{
+        members:{
+          select:{
+            id:true,
+            fullName:true,
+            imageUrl:true
+          }
+        },
+        author:{
+          select:{
+            id:true,
+            fullName:true,
+            imageUrl:true
+          }
+        }
+      }
+    })
   }
+  
 
   findAll() {
     return `This action returns all tasks`;

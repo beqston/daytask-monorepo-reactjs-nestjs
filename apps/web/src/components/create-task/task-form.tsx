@@ -10,6 +10,7 @@ import ErrorMessage from "../error/error";
 import { isAxiosError } from "axios";
 import { Loading } from "../ui/loading";
 import CreateButton from "./create-button";
+import { clearMembers } from "../../store/slices/taskMembersSlice";
 
 type TaskFormState = {
     title:string;
@@ -33,7 +34,7 @@ function getInitialState():TaskFormState{
 export default function TaskForm(){
     const [formState, setFormState] = useState(getInitialState);
     const {members} = useAppSelector(state=>state.tasksmembers);
-    const membersIds = members.map(m=>m.id);
+    const memberIds = members.map(m=>m.id);
     const [showError, setShowError] = useState(false);
     const[errorText, setErrorText] = useState("");
     const[loading, setLoading] = useState(false);
@@ -46,23 +47,23 @@ export default function TaskForm(){
         e.preventDefault();
         try {
             setLoading(true);
-            if(membersIds.length == 0){
+            if(memberIds.length == 0){
                 setShowError(true);
                 setErrorText("Please add member!");
                 return;
             }
             await api.post('/tasks', {
                 ...formState, 
-                members:membersIds
+                memberIds:memberIds
             });
             setFormState(getInitialState());
+            clearMembers();
         } catch (error) {
             setShowError(true);
             if(isAxiosError(error)){
                 setErrorText(error.response?.data?.message)
             }
-
-            setErrorText("Somethiung went Wrong!!")
+            setErrorText("Something went Wrong!!");
         }finally{
             setLoading(false);
             setTimeout(()=>{

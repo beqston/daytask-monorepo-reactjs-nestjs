@@ -2,15 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
-@Controller('tasks')
+@Controller({path:'tasks', version:'1'})
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  create(@Body() createTaskDto: CreateTaskDto, @GetUser("id") authorId:string) {
+    return this.tasksService.createTask(createTaskDto, authorId);
   }
+  
 
   @Get()
   findAll() {

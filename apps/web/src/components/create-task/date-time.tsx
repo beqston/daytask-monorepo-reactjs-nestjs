@@ -36,6 +36,7 @@ export default function TimeDateContainer({ date, time, onDateChange, onTimeChan
                         <input
                             type="time"
                             id="clock"
+                            name="time"
                             value={time}
                             onChange={(e) => onTimeChange(e.target.value)}
                             className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer"
@@ -57,6 +58,7 @@ export default function TimeDateContainer({ date, time, onDateChange, onTimeChan
                             type="date"
                             id="date"
                             value={date}
+                            name="date"
                             onChange={(e) => onDateChange(e.target.value)}
                             className="w-full h-full absolute top-0 left-0 opacity-0 z-20 cursor-pointer"
                         />

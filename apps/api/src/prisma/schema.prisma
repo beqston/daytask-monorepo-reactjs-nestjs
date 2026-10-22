@@ -34,7 +34,7 @@ model Task {
   id          String   @id @default(uuid())
   title       String
   details     String
-  percentage  Int      @default(0)        
+  percentage  Int?     @default(0)        
   members     User[]   @relation("TaskMembers")
   time        String       
   date        String
