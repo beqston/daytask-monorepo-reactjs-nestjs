@@ -38,9 +38,9 @@ export class TasksService {
     })
   }
   
-
-  findAll() {
-    return `This action returns all tasks`;
+  async findAllTask() {
+    const tasks = await this.prisma.task.findMany();
+    return tasks;
   }
 
   findOne(id: number) {
