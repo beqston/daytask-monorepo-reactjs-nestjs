@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAppSelector } from "../../store/hooks";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import AddMembers from "./add-members";
 import AddNewInput from "./add-new-input";
 import TimeDateContainer from "./date-time";
@@ -20,24 +20,29 @@ type TaskFormState = {
     subtask?:string;
 }
 
-function getInitialState():TaskFormState{
-    const now = new Date();
-    return{
-      title:"",
-      details:"",
-      time:now.toTimeString().slice(0, 5),
-      date:now.toLocaleDateString("en-CA"),
-      subtask:""
-    }
-} 
+function getInitialState(): TaskFormState {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+
+  return {
+    title: "",
+    details: "",
+    time: now.toTimeString().slice(0, 5),
+    date: tomorrow.toLocaleDateString("en-CA"),
+    subtask: "",
+  };
+}
 
 export default function TaskForm(){
     const [formState, setFormState] = useState(getInitialState);
     const {members} = useAppSelector(state=>state.tasksmembers);
+    const dispatch = useAppDispatch();
     const memberIds = members.map(m=>m.id);
     const [showError, setShowError] = useState(false);
     const[errorText, setErrorText] = useState("");
     const[loading, setLoading] = useState(false);
+    const [succsessMessage, setSuccsessMessage] = useState(false);
     
     function updateField<K extends keyof TaskFormState>(key: K, value: TaskFormState[K]) {
         setFormState(prev => ({ ...prev, [key]: value }));
@@ -57,17 +62,21 @@ export default function TaskForm(){
                 memberIds:memberIds
             });
             setFormState(getInitialState());
-            clearMembers();
+            dispatch(clearMembers());
+            setSuccsessMessage(true);
         } catch (error) {
             setShowError(true);
             if(isAxiosError(error)){
                 setErrorText(error.response?.data?.message)
+            }else{
+                setErrorText("Something went Wrong!!");
             }
-            setErrorText("Something went Wrong!!");
+            
         }finally{
             setLoading(false);
             setTimeout(()=>{
                 setShowError(false);
+                setSuccsessMessage(false)
             }, 10000)
         }
     }
@@ -88,6 +97,10 @@ export default function TaskForm(){
 
             {
                 loading && <Loading />
+            }
+
+            {
+                succsessMessage && <p className="bg-primary-grey-300 text-green-400 p-4 fixed top-2 right-2">Task Added succsesfully!</p>
             }
         </section>
     )
