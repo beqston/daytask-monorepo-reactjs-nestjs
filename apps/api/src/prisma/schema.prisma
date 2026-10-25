@@ -44,4 +44,9 @@ model Task {
   subtask     String?   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([isCompleted])
+  @@index([authorId])
+  @@index([date])
+  @@index([isCompleted, date])
 }

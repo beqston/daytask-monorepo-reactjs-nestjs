@@ -37,11 +37,20 @@ export class TasksService {
       }
     })
   }
+
   
   async findAllTask() {
     const tasks = await this.prisma.task.findMany();
     return tasks;
   }
+  
+  findCompletedTasks(){
+    return this.prisma.task.findMany({
+      where:{
+        isCompleted:true
+      }
+    });
+  } 
 
   findOne(id: number) {
     return `This action returns a #${id} task`;

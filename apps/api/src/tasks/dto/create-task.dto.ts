@@ -1,32 +1,56 @@
-import { IsArray, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { Type } from "class-transformer";
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  MaxLength,
+  Min,
+  ArrayNotEmpty,
+  Matches,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateTaskDto {
-    @IsNotEmpty()
-    @IsString()
-    title!:string
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(191)
+  title!: string;
 
-    @IsNotEmpty()
-    @IsString()
-    details!:string
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(5000)
+  details!: string;
 
-    @IsNotEmpty()
-    @IsString()
-    time!:string
+  @IsNotEmpty()
+  @Matches(/^([01]\d|2[0-3]):[0-5]\d$/, {
+    message: 'time must be in HH:mm format (e.g. 14:30)',
+  })
+  time!: string;
 
-    @IsNotEmpty()
-    @IsString()
-    date!:string
+  @IsNotEmpty()
+  @IsString()
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: 'date must be in YYYY-MM-DD format (e.g. 2026-10-25)',
+  })
+  date!: string;
 
-    @IsString()
-    subtask?:string
+  @IsOptional()
+  @IsString()
+  @MaxLength(191)
+  subtask?: string;
 
-    @IsInt()
-    @IsOptional()
-    @Type(() => Number)
-    percentage?: number;
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  percentage?: number;
 
-    @IsArray()
-    @IsString({each:true})
-    memberIds!:string[]
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID('4', { each: true })
+  memberIds!: string[];
 }

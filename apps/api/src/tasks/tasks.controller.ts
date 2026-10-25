@@ -19,6 +19,11 @@ export class TasksController {
     return this.tasksService.findAllTask();
   }
 
+  @Get('completed')
+  findCompletedTasks(){
+    return this.findCompletedTasks();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);
