@@ -48,36 +48,43 @@ export default function TaskForm(){
         setFormState(prev => ({ ...prev, [key]: value }));
     }
 
-    async function handleSubmit(e:React.SubmitEvent<HTMLFormElement>){
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        if (memberIds.length === 0) {
+            setShowError(true);
+            setErrorText("Please add member!");
+            return;
+        }
+        if (!formState.time || !formState.date) {
+            setShowError(true);
+            setErrorText("Please select date and time!");
+            return;
+        }
+
         try {
             setLoading(true);
-            if(memberIds.length == 0){
-                setShowError(true);
-                setErrorText("Please add member!");
-                return;
-            }
-            await api.post('/tasks', {
-                ...formState, 
-                memberIds:memberIds
+            await api.post("/tasks", {
+                ...formState,
+                memberIds,
+                tzOffset: new Date().getTimezoneOffset(),
             });
             setFormState(getInitialState());
             dispatch(clearMembers());
             setSuccsessMessage(true);
         } catch (error) {
             setShowError(true);
-            if(isAxiosError(error)){
-                setErrorText(error.response?.data?.message)
-            }else{
-                setErrorText("Something went Wrong!!");
-            }
-            
-        }finally{
+            setErrorText(
+                isAxiosError(error)
+                    ? error.response?.data?.message ?? "Something went wrong!"
+                    : "Something went wrong!"
+            );
+        } finally {
             setLoading(false);
-            setTimeout(()=>{
+            setTimeout(() => {
                 setShowError(false);
-                setSuccsessMessage(false)
-            }, 10000)
+                setSuccsessMessage(false);
+            }, 10000);
         }
     }
 

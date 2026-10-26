@@ -24,6 +24,11 @@ export class TasksController {
     return this.findCompletedTasks();
   }
 
+  @Get("pending")
+  findPendingTasks(){
+    return this.findPendingTasks();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);

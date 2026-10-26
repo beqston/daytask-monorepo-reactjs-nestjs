@@ -9,34 +9,22 @@ export class TasksService {
     private prisma:PrismaService,
   ){}
 
-  async createTask(createTaskDto: CreateTaskDto, authorId:string) {
-    const {memberIds, ...rest} = createTaskDto;
-    return this.prisma.task.create({
-      data:{
-        ...rest,
-        authorId,
-        members:{
-            connect: memberIds?.map((id) => ({ id })),
-        }
+async createTask(createTaskDto: CreateTaskDto, authorId: string) {
+  const { memberIds, tzOffset, ...rest } = createTaskDto;
+  return this.prisma.task.create({
+    data: {
+      ...rest,
+      authorId,
+      members: {
+        connect: memberIds.map((id) => ({ id })),
       },
-      include:{
-        members:{
-          select:{
-            id:true,
-            fullName:true,
-            imageUrl:true
-          }
-        },
-        author:{
-          select:{
-            id:true,
-            fullName:true,
-            imageUrl:true
-          }
-        }
-      }
-    })
-  }
+    },
+    include: {
+      members: { select: { id: true, fullName: true, imageUrl: true } },
+      author: { select: { id: true, fullName: true, imageUrl: true } },
+    },
+  });
+}
 
   
   async findAllTask() {
@@ -44,6 +32,7 @@ export class TasksService {
     return tasks;
   }
   
+
   findCompletedTasks(){
     return this.prisma.task.findMany({
       where:{
@@ -51,6 +40,14 @@ export class TasksService {
       }
     });
   } 
+
+  findPendingTasks(){
+    return this.prisma.task.findMany({
+      where:{
+        isCompleted:false
+      }
+    })
+  }
 
   findOne(id: number) {
     return `This action returns a #${id} task`;
