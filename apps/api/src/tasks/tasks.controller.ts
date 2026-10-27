@@ -21,12 +21,12 @@ export class TasksController {
 
   @Get('completed')
   findCompletedTasks(){
-    return this.findCompletedTasks();
+    return this.tasksService.findCompletedTasks();
   }
 
   @Get("pending")
   findPendingTasks(){
-    return this.findPendingTasks();
+    return this.tasksService.findPendingTasks();
   }
 
   @Get(':id')

@@ -1,6 +1,6 @@
 export default function CompleteTasksWrapper({children}:{children:React.ReactNode}){
     return(
-        <div className='m-2 flex gap-2 overflow-hidden'>
+        <div className='overflow-hidden relative min-h-14'>
             {children}
         </div>
     )
