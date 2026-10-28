@@ -6,47 +6,51 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class TasksService {
   constructor(
-    private prisma:PrismaService,
-  ){}
+    private prisma: PrismaService,
+  ) {}
 
-async createTask(createTaskDto: CreateTaskDto, authorId: string) {
-  const { memberIds, tzOffset, ...rest } = createTaskDto;
-  return this.prisma.task.create({
-    data: {
-      ...rest,
-      authorId,
-      members: {
-        connect: memberIds.map((id) => ({ id })),
+  private readonly taskInclude = {
+    members: { select: { id: true, fullName: true, imageUrl: true } },
+    author: { select: { id: true, fullName: true, imageUrl: true } },
+  } as const;
+
+  async createTask(createTaskDto: CreateTaskDto, authorId: string) {
+    const { memberIds, tzOffset, ...rest } = createTaskDto;
+    return this.prisma.task.create({
+      data: {
+        ...rest,
+        authorId,
+        members: {
+          connect: memberIds.map((id) => ({ id })),
+        },
       },
-    },
-    include: {
-      members: { select: { id: true, fullName: true, imageUrl: true } },
-      author: { select: { id: true, fullName: true, imageUrl: true } },
-    },
-  });
-}
+      include: this.taskInclude,
+    });
+  }
 
-  
   async findAllTask() {
-    const tasks = await this.prisma.task.findMany();
+    const tasks = await this.prisma.task.findMany({
+      include: this.taskInclude,
+    });
     return tasks;
   }
-  
 
-  findCompletedTasks(){
+  findCompletedTasks() {
     return this.prisma.task.findMany({
-      where:{
-        isCompleted:true
-      }
+      where: {
+        isCompleted: true,
+      },
+      include: this.taskInclude,
     });
-  } 
+  }
 
-  findPendingTasks(){
+  findPendingTasks() {
     return this.prisma.task.findMany({
-      where:{
-        isCompleted:false
-      }
-    })
+      where: {
+        isCompleted: false,
+      },
+      include: this.taskInclude,
+    });
   }
 
   findOne(id: number) {

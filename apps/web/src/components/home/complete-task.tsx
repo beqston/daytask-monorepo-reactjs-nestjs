@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react'
 import api from '../../api/api'
 import TaskMembers from './task-members'
-import ellipse1 from '/images/home/team-members/Ellipse1.png'
-import ellipse2 from '/images/home/team-members/Ellipse2.png'
-import ellipse3 from '/images/home/team-members/Ellipse3.png'
-import ellipse4 from '/images/home/team-members/Ellipse4.png'
-import ellipse5 from '/images/home/team-members/Ellipse5.png'
-import type { Task } from '@daytask/types'
 import { isAxiosError } from 'axios'
 import ErrorMessage from '../error/error'
 import { Loading } from '../ui/loading'
+import type { Task } from '../../types/task'
 
 export default function CompleteTask(){
     const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
@@ -22,6 +17,7 @@ export default function CompleteTask(){
         try {
             setLoading(true);
             const { data } = await api.get('/tasks/completed');
+            console.log(data)
             setCompletedTasks(data);
             setLoading(false);
         } catch (error) {
@@ -58,7 +54,7 @@ export default function CompleteTask(){
             {
                 completedTasks.map((item, index)=>{
                     return(
-                        <div style={{backgroundColor:index == 0?'#FED36A':'#455A64'}} className={`mt-4 text-${index == 0?'black':'white'} overflow-hidden border-2 shrink flex-1 p-2 border-white min-w-[80%] lg:min-w-58`}>
+                        <div key={item.id} style={{backgroundColor:index == 0?'#FED36A':'#455A64'}} className={`mt-4 text-${index == 0?'black':'white'} overflow-hidden border-2 shrink flex-1 p-2 border-white min-w-[80%] lg:min-w-58`}>
                             <div className='grid grid-rows-2'>
                                 {/* title of complete task */}
                                 <h3 className={`text-3xl font-bold `}>{item.title}</h3>
@@ -68,7 +64,7 @@ export default function CompleteTask(){
                                         <p className={`text-${index==0?'primary-black-200':'bg-primary-white-400'}`}>Team members</p>
                                         
                                         {/* members imgages container */}
-                                        <TaskMembers members={[ellipse1, ellipse2, ellipse3, ellipse4, ellipse5]} />
+                                        <TaskMembers members={item.members} />
                                     </div>
 
                                     <div className="w-full">
