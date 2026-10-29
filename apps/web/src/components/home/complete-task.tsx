@@ -17,19 +17,14 @@ export default function CompleteTask(){
         try {
             setLoading(true);
             const { data } = await api.get('/tasks/completed');
-            console.log(data)
             setCompletedTasks(data);
-            setLoading(false);
         } catch (error) {
             setError(true);
             setErrorText(isAxiosError(error)
             ? error.response?.data?.message ?? "Something went wrong!":"Something went wrong!"
         )
         }finally{
-            setTimeout(()=>{
-                setLoading(false);
-                setError(false);
-            }, 10000)
+            setLoading(false);
         }
     }
 
@@ -38,7 +33,7 @@ export default function CompleteTask(){
     }, []);
 
     if(loading){
-        return <Loading />
+        return <div className='translate-y-4'><Loading /></div>
     }
 
     if(error){

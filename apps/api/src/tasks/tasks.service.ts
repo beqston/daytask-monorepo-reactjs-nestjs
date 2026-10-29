@@ -53,6 +53,19 @@ export class TasksService {
     });
   }
 
+  findPendingTasksFromStart() {
+    return this.prisma.task.findMany({
+      where: {
+        isCompleted: false,
+      },
+      include: this.taskInclude,
+      orderBy:{
+        date:"desc"
+      },
+      take:3
+    });
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} task`;
   }

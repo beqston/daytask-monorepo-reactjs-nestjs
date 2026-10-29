@@ -1,12 +1,13 @@
 import CompleteTask from '../components/home/complete-task'
-import ProjectContaiiner from '../components/home/project-container'
 import Navbar from '../components/ui/navbar'
+import OnGoingProjectContaiiner from '../components/home/project-container'
 import PagesWrapper from '../components/ui/pages-wrapper'
 import HomeHead from '../components/home/home-head'
 import InputContainer from '../components/home/input-container'
 import CompleteTaskHead from '../components/home/complete-task-head'
 import CompleteTasksWrapper from '../components/home/complete-tasks-wrapper'
 import OngoingProjectsHead from '../components/home/ongoing-projects-head'
+import PendingTasksWrapper from '../components/home/pending-tasks-wrapper'
 
 
 export default function Home(){
@@ -27,13 +28,15 @@ export default function Home(){
                 <CompleteTask />
             </CompleteTasksWrapper>
 
-            {/* ongoing projects head */}
-            <OngoingProjectsHead />
+            <PendingTasksWrapper>
+                {/* ongoing projects head */}
+                <OngoingProjectsHead />
 
-            {/* ongoing projects container */}
-            <ProjectContaiiner title='Mobile App Wireframe' percentage={75} />
-            <ProjectContaiiner title='Real Estate Desings App' percentage={70} />
-            <ProjectContaiiner title='Dashboards & App Desings' percentage={40} />
+                {/* ongoing projects container */}
+                <OnGoingProjectContaiiner  />
+            </PendingTasksWrapper>
+
+
             <Navbar />
        </PagesWrapper>
     )
