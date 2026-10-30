@@ -1,4 +1,4 @@
-import profile from "/images/profile-img.png"
+import profile from "/images/profile-default.png"
 import addsquare from "/images/addsquare.png"
 
 export default function ProfileImageContainer(){

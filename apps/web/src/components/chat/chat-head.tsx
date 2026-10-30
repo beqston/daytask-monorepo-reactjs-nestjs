@@ -1,5 +1,5 @@
 import arrowleft from '/images/arrowleft.png'
-import profile from '/images/profile1.png'
+import profile from '/images/profile-default.png'
 import videoCall from '/images/chat/video.png'
 import audioCall from '/images/chat/call.png'
 import { Link } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import profile from "/images/profile1.png"
+import profile from "/images/profile-default.png"
 import NotificationMessage from "./notification-message";
 
 export default function EarlierNotification(){

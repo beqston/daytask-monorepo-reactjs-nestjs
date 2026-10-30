@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -32,6 +32,11 @@ export class TasksController {
   @Get("pending/from-start")
   findPendingTasksFromStart(){
     return this.tasksService.findPendingTasksFromStart();
+  }
+
+  @Get('/my-tasks')
+  myTasks(@GetUser('id') id:string, @Query() date?:string){
+    return this.tasksService.myTasks(id, date)
   }
 
   @Get(':id')

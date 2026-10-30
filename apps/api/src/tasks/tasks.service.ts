@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -65,6 +65,21 @@ export class TasksService {
       take:3
     });
   }
+
+async myTasks(id: string, date?: string) {
+  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new BadRequestException('Date must be in YYYY-MM-DD format');
+  }
+
+  const targetDate = date ?? new Date().toISOString().split('T')[0];
+
+  return this.prisma.task.findMany({
+    where: {
+      authorId: id,
+      date: targetDate,
+    },
+  });
+}
 
   findOne(id: number) {
     return `This action returns a #${id} task`;

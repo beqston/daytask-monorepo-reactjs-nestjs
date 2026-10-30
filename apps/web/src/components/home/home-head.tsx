@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import profile from '/images/home/profile.png'
+import profile from '/images/profile-default.png'
 import { useAppSelector } from '../../store/hooks'
 
 export default function HomeHead(){
@@ -12,7 +12,7 @@ export default function HomeHead(){
             </div>
 
             <div>
-                <Link to={'/profile'}><img width={48} height={48} src={profile} alt='profile' /></Link>
+                <Link to={'/profile'}><img width={48} height={48} src={user?.imageUrl ?? profile} alt='profile' /></Link>
             </div>
         </div>
     )

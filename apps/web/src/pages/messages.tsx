@@ -3,8 +3,7 @@ import PagesWrapper from "../components/ui/pages-wrapper";
 import MessagesHead from "../components/messages/messages-head";
 import ChatsLinks from "../components/messages/chat-links";
 import MessageWrapper from "../components/messages/message-wrapper";
-
-import profile1 from "/images/profile1.png"
+import profile from "/images/profile-default.png"
 import { useState } from "react";
 import NewMessage from "../components/messages/new-message/new-message";
 import { Loading } from "../components/ui/loading";
@@ -32,8 +31,8 @@ export default function Messages(){
 
                 {/* all messages container */}
                 <div>
-                    <MessageWrapper author="Jhon Doe" isReadMessage={false} lastMessage="Hello, i am jhon dddddddddd sssssssssssss sssssssssssssssssss" minuteAgo="31" imageUrl={profile1}  />
-                    <MessageWrapper author="Jhon Doe" isReadMessage={true} lastMessage="Hello, i am jhon" minuteAgo="31" imageUrl={profile1}  />
+                    <MessageWrapper author="Jhon Doe" isReadMessage={false} lastMessage="Hello, i am jhon dddddddddd sssssssssssss sssssssssssssssssss" minuteAgo="31" imageUrl={profile}  />
+                    <MessageWrapper author="Jhon Doe" isReadMessage={true} lastMessage="Hello, i am jhon" minuteAgo="31" imageUrl={profile}  />
                 </div>
 
                 <div 

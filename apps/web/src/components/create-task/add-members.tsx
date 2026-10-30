@@ -2,11 +2,9 @@ import { lazy, Suspense, useState } from "react"
 import addsquare from "/images/create-task/addsquare.png"
 import { Loading } from "../ui/loading";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-
-import profile1 from '/images/profile1.png'
 import closesquare from '/images/create-task/closesquare.png'
 import { removeMember } from "../../store/slices/taskMembersSlice";
-
+import profile from '/images/profile-default.png'
 const UsersList = lazy(() => import("./users-list"));
 
 export default function AddMembers(){
@@ -37,7 +35,7 @@ export default function AddMembers(){
                             <div key={member.id} className="flex gap-1 bg-light-blue-100 p-2 items-center">
                                 <div className="flex gap-1 bg-light-blue-100 items-center">
                                     <div className="w-5 h-5 rounded-full">
-                                        <img className="object-fill w-full h-full" src={member.imageUrl?member.imageUrl:profile1} alt="profile-image" />
+                                        <img className="object-fill w-full h-full" src={member.imageUrl?member.imageUrl:profile} alt="profile-image" />
                                     </div>
                                     <p className="text-primary-pure-white">{firstName}</p>
                                 </div>
