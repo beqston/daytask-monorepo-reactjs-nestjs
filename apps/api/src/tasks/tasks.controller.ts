@@ -35,7 +35,7 @@ export class TasksController {
   }
 
   @Get('/my-tasks')
-  myTasks(@GetUser('id') id:string, @Query() date?:string){
+  myTasks(@GetUser('id') id:string, @Query("date") date?:string){
     return this.tasksService.myTasks(id, date)
   }
 

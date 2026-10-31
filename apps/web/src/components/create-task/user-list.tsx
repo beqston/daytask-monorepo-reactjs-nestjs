@@ -1,4 +1,4 @@
-import profile1 from "/images/profile1.png"
+import profile from "/images/profile-default.png"
 import addsquare from "/images/addsquare.png"
 import type { User } from "@daytask/types";
 
@@ -14,7 +14,7 @@ export default function UserList({fullName, user, handleClick}:UserListPropsType
         <div className="flex w-full justify-between border-2 border-primary-blue-100 p-4">
             <div className="flex gap-2">
                 <div className="w-6 h-6 md:w-8 md:h-8">
-                    <img src={profile1} alt="profile-image" className="object-fill w-full h-full"/>
+                    <img src={profile} alt="profile-image" className="object-fill w-full h-full"/>
                 </div>
                 <p>{fullName}</p>
             </div>

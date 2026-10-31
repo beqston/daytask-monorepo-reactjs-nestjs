@@ -33,7 +33,6 @@ export default function OnGoingProjectContaiiner(){
         try {
             setLoading(true);
             const { data } = await api.get('/tasks/pending/from-start');
-            console.log(data)
             setPendingTasks(data);
         } catch (error) {
             setError(true)

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import api from '../../api/api';
 
 const days = [
   { id: 1, date: 1, day: 'Mon' },
@@ -12,6 +13,19 @@ const days = [
 
 export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(4); 
+
+  async function getMyTasks(){
+    try {
+      const res = await api.get('/tasks/my-tasks');
+console.log(res.data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    getMyTasks()
+  }, [])
 
   return (
     <div className="py-4 text-white  rounded-xl">

@@ -75,9 +75,14 @@ async myTasks(id: string, date?: string) {
 
   return this.prisma.task.findMany({
     where: {
-      authorId: id,
       date: targetDate,
+      OR: [
+        { authorId: id },
+        { members: { some: { id } } },
+      ],
     },
+    include: this.taskInclude,
+    orderBy: { time: 'desc' },
   });
 }
 
