@@ -1,11 +1,11 @@
 interface TasskContainerProps{
     isCompleted:boolean;
     text:string;
-    date:string;
+    time:string;
     users:string[]
 }
 
-export default function TaskContainer({text, isCompleted, date, users}:TasskContainerProps){
+export default function TaskContainer({text, isCompleted, time, users}:TasskContainerProps){
     return(
         <div 
             className={`${isCompleted?"bg-primary-yellow-100":"bg-primary-blue-200  border-l-14 border-l-primary-yellow-100"} p-4 flex justify-between items-center mt-4`}>
@@ -13,7 +13,7 @@ export default function TaskContainer({text, isCompleted, date, users}:TasskCont
             {/* task's name and date container */}
             <div className={`${isCompleted?"pl-2 text-primary-grey-300":"pl-4 text-primary-pure-white" } flex flex-col gap-2`}>
                 <h4 className="text-xl">{text}</h4>
-                <span className={`${isCompleted?"text-primary-grey-300":"text-primary-white-400"}`}>{date}</span>
+                <span className={`${isCompleted?"text-primary-grey-300":"text-primary-white-400"}`}>{time}</span>
             </div>
 
             {/* users container */}

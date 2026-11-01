@@ -1,35 +1,18 @@
-import { useEffect, useState } from 'react';
-import api from '../../api/api';
+import { useState } from 'react';
+import { getCurrentWeekDays } from '../../utils/get-current-week-days';
 
-const days = [
-  { id: 1, date: 1, day: 'Mon' },
-  { id: 2, date: 2, day: 'Tue' },
-  { id: 3, date: 3, day: 'Wed' },
-  { id: 4, date: 4, day: 'Thu' },
-  { id: 5, date: 5, day: 'Fri' },
-  { id: 6, date: 6, day: 'Sat' },
-  { id: 7, date: 7, day: 'Sun' },
-];
+interface ScheduleProps{
+  getMyTasks: (date?:string)=>Promise<void>
+}
 
-export default function Schedule() {
-  const [selectedDate, setSelectedDate] = useState(4); 
-
-  async function getMyTasks(){
-    try {
-      const res = await api.get('/tasks/my-tasks');
-console.log(res.data);
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(()=>{
-    getMyTasks()
-  }, [])
+export default function Schedule({getMyTasks}:ScheduleProps) {
+  const [days, _] = useState(getCurrentWeekDays());
+  const [selectedDate, setSelectedDate] = useState(new Date().getDate()); 
+  const currentMonthName = new Date().toLocaleString('en-US', { month: 'long' });
 
   return (
     <div className="py-4 text-white  rounded-xl">
-      <h2 className="text-xl font-bold mb-4">November</h2>
+      <h2 className="text-xl font-bold mb-4">{currentMonthName}</h2>
       
       {/* Horizontal Scroll / Grid Bar */}
       <div className="grid grid-cols-[repeat(7,1fr)] gap-2 md:gap-4 overflow-x-auto pb-2">
@@ -39,7 +22,10 @@ console.log(res.data);
           return (
             <button
               key={item.id}
-              onClick={() => setSelectedDate(item.date)}
+              onClick={() =>{
+                setSelectedDate(item.date);
+                getMyTasks(item.fullDate)
+              }}
               className={`flex flex-col items-center justify-center min-w-12 h-20 rounded-lg transition-all ${
                 isSelected
                   ? 'bg-primary-yellow-100 text-black font-semibold' 
