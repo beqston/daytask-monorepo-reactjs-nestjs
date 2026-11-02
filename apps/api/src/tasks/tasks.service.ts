@@ -44,6 +44,19 @@ export class TasksService {
     });
   }
 
+  findCompletedTasksFromStart() {
+    return this.prisma.task.findMany({
+      where: {
+        isCompleted: true,
+      },
+      include: this.taskInclude,
+      orderBy:{
+        date:"desc"
+      },
+      take:3
+    });
+  }
+
   findPendingTasks() {
     return this.prisma.task.findMany({
       where: {

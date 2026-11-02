@@ -24,6 +24,11 @@ export class TasksController {
     return this.tasksService.findCompletedTasks();
   }
 
+  @Get('completed/from-start')
+  findCompletedTasksFromStart(){
+    return this.tasksService.findCompletedTasksFromStart();
+  }
+
   @Get("pending")
   findPendingTasks(){
     return this.tasksService.findPendingTasks();

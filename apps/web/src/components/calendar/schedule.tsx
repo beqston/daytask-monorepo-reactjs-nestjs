@@ -1,30 +1,30 @@
 import { useState } from 'react';
 import { getCurrentWeekDays } from '../../utils/get-current-week-days';
 
-interface ScheduleProps{
-  getMyTasks: (date?:string)=>Promise<void>
+interface ScheduleProps {
+  getMyTasks: (date?: string) => Promise<void>;
+  selectedFullDate: string;
+  setSelectedFullDate: (date: string) => void;
 }
 
-export default function Schedule({getMyTasks}:ScheduleProps) {
+export default function Schedule({ getMyTasks, selectedFullDate, setSelectedFullDate }: ScheduleProps) {
   const [days, _] = useState(getCurrentWeekDays());
-  const [selectedDate, setSelectedDate] = useState(new Date().getDate()); 
   const currentMonthName = new Date().toLocaleString('en-US', { month: 'long' });
 
   return (
-    <div className="py-4 text-white  rounded-xl">
+    <div className="py-4 text-white rounded-xl">
       <h2 className="text-xl font-bold mb-4">{currentMonthName}</h2>
       
-      {/* Horizontal Scroll / Grid Bar */}
       <div className="grid grid-cols-[repeat(7,1fr)] gap-2 md:gap-4 overflow-x-auto pb-2">
         {days.map((item) => {
-          const isSelected = selectedDate === item.date;
+          const isSelected = selectedFullDate === item.fullDate;
           
           return (
             <button
               key={item.id}
-              onClick={() =>{
-                setSelectedDate(item.date);
-                getMyTasks(item.fullDate)
+              onClick={() => {
+                setSelectedFullDate(item.fullDate); // ვცვლით მშობელში არჩეულ თარიღს
+                getMyTasks(item.fullDate);         // ვტვირთავთ შესაბამის თასკებს
               }}
               className={`flex flex-col items-center justify-center min-w-12 h-20 rounded-lg transition-all ${
                 isSelected
@@ -33,7 +33,7 @@ export default function Schedule({getMyTasks}:ScheduleProps) {
               }`}
             >
               <span className="text-lg font-bold">{item.date}</span>
-              <span className="text-xs ">{item.day}</span>
+              <span className="text-xs">{item.day}</span>
             </button>
           );
         })}
