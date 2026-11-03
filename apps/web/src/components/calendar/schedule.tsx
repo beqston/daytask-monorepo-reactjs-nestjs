@@ -23,8 +23,8 @@ export default function Schedule({ getMyTasks, selectedFullDate, setSelectedFull
             <button
               key={item.id}
               onClick={() => {
-                setSelectedFullDate(item.fullDate); // ვცვლით მშობელში არჩეულ თარიღს
-                getMyTasks(item.fullDate);         // ვტვირთავთ შესაბამის თასკებს
+                setSelectedFullDate(item.fullDate);
+                getMyTasks(item.fullDate);         
               }}
               className={`flex flex-col items-center justify-center min-w-12 h-20 rounded-lg transition-all ${
                 isSelected

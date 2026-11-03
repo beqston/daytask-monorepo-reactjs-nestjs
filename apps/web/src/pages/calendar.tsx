@@ -8,18 +8,21 @@ import type { Task } from "../types/task";
 import api from "../api/api";
 import { isAxiosError } from "axios";
 import ErrorMessage from "../components/error/error";
+import { Loading } from "../components/ui/loading";
 
 export default function Calendar() {
     const [error, setError] = useState(false);
     const [errorText, setErrorText] = useState("");
     const [tasks, setTasks] = useState<Task[]>([]);
+    const[loading, setLoading]= useState(false);
     
-    // ვინახავთ დღევანდელ სრულ თარიღს საწყის მნიშვნელობად (YYYY-MM-DD)
+    // save full date in format (YYYY-MM-DD)
     const todayString = new Date().toISOString().split('T')[0];
     const [selectedFullDate, setSelectedFullDate] = useState<string>(todayString);
 
     async function getMyTasks(query?: string) {
         try {
+            setLoading(true);
             if (query) {
                 const { data } = await api.get(`/tasks/my-tasks?date=${query}`);
                 setTasks(data);
@@ -30,11 +33,12 @@ export default function Calendar() {
         } catch (error) {
             setError(true);
             setErrorText(isAxiosError(error) ? error.response?.data?.message ?? "Something went wrong!" : "Something went wrong!");
+        }finally{
+            setLoading(false);
         }
     }
     
     useEffect(() => {
-        // პირველადი ჩატვირთვისას მიმდინარე დღის თასკების წამოღება
         getMyTasks(todayString);
     }, []);
 
@@ -45,14 +49,12 @@ export default function Calendar() {
     return (
         <PagesWrapper>
             <CalendarHead />
-            {/* Schedule-ს ვგზავნით ფუნქციას, რომელიც განაახლებს არჩეულ თარიღსაც */}
             <Schedule 
                 getMyTasks={getMyTasks} 
                 selectedFullDate={selectedFullDate}
                 setSelectedFullDate={setSelectedFullDate}
             />
-            {/* ვუგზავნით selectedFullDate-ს, რომ სათაური შეიცვალოს */}
-            <ThisDayTasks tasks={tasks} selectedDate={selectedFullDate} />
+            <ThisDayTasks loading={loading} tasks={tasks} selectedDate={selectedFullDate} />
             <Navbar />
         </PagesWrapper>
     );
