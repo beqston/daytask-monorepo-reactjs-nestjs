@@ -8,7 +8,6 @@ import type { Task } from "../types/task";
 import api from "../api/api";
 import { isAxiosError } from "axios";
 import ErrorMessage from "../components/error/error";
-import { Loading } from "../components/ui/loading";
 
 export default function Calendar() {
     const [error, setError] = useState(false);
