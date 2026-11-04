@@ -18,7 +18,7 @@ export default function Input({type, htmlFor, placeholder, text, leftImage, righ
             <label htmlFor={htmlFor} className="text-primary-grey-100 flex flex-col relative">
                 {text}
                 <img src={leftImage} alt="icon" width={24} height={24} className={`absolute ${text?"top-8 left-2":"top-2 left-2"}`}/>
-                <input title={title} onChange={onChange} value={value} className=" bg-light-blue-100 p-2 pl-10" type={type} name={htmlFor} placeholder={placeholder} id={htmlFor} pattern={pattern} />
+                <input title={title} onChange={onChange} value={value} readOnly className=" bg-light-blue-100 p-2 pl-10" type={type} name={htmlFor} placeholder={placeholder} id={htmlFor} pattern={pattern} />
                 {
                     rightImage && <img onClick={changeType} src={rightImage} alt="icon" width={24} height={24} className={`absolute ${text?"right-2 top-8":"right-2 top-2"}`}/>
                 }
