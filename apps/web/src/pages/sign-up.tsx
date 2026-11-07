@@ -73,7 +73,7 @@ export default function SignUp(){
 
                 {/* inputs container */}
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-                    <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="(?=.{1,48}$)[a-zA-Z]+([a-zA-Z]+)+" title="FullName must contain only Latin letters and at least one space!"/>
+                    <Input onChange={handleChange} type="text" htmlFor="fullName" placeholder="Fazil Laghari" text="Full Name" leftImage={userImage} value={formData.fullName} pattern="(?=.{1,48}$)[a-zA-Z]+( [a-zA-Z]+)+" title="FullName must contain only Latin letters and at least one space!"/>
                     <Input onChange={handleChange} type="email" htmlFor="email"  placeholder="fazzzil72@gmail.com" text="Email Address" leftImage={usertag} value={formData.email} pattern="(?=.{1,254}$)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,24}" title="please provide valid email! max character must be 254" />
                     <Input onChange={handleChange} type={passwordType} htmlFor="password" placeholder="Password" text="Password" leftImage={lock1}  rightImage={showPassword} changeType={handleChangeType} value={formData.password} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}" title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character! max character must be 128" />
 
