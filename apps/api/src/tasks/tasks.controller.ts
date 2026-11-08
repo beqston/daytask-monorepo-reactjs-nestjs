@@ -44,6 +44,11 @@ export class TasksController {
     return this.tasksService.myTasks(id, date)
   }
 
+  @Get("/for-profile")
+  myTasksForProfile(@GetUser('id') id:string, @Query("quantity") quantity:number){
+    return this.tasksService.findMyTasksForProfile(id, quantity);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(+id);

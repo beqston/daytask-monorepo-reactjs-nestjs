@@ -28,6 +28,25 @@ export class TasksService {
     });
   }
 
+async findMyTasksForProfile(authorId: string, qnt: number = 3) {
+  const limit = qnt + 1;
+
+  const tasks = await this.prisma.task.findMany({
+    where: { authorId },
+    include: this.taskInclude,
+    take: limit,
+    orderBy: { createdAt: "desc" },
+  });
+
+  const hasMore = tasks.length > qnt;
+
+  if (hasMore) {
+    tasks.pop();
+  }
+
+  return tasks;
+}
+
   async findAllTask() {
     const tasks = await this.prisma.task.findMany({
       include: this.taskInclude,

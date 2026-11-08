@@ -22,7 +22,7 @@ export default function EditInput({ name, pattern, type, handleOnSubmit, setShow
         return () => {
             document.removeEventListener("pointerdown", handleCloseForm);
         };
-    }, [setShowEdit]);
+    }, []);
 
     return (
         <form
