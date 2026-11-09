@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import api from "../../api/api";
 import type { Task } from "../../types/task";
 import { isAxiosError } from "axios";
 
+
 export default function MyTasksList(){
+    const taskContainerRef = useRef<HTMLDivElement>(null);
     const [tasks, setTasks] = useState<Task[]>([]);
     const[quantity, setQuantity] = useState(3);
     const[error, setError]= useState(false);
@@ -43,7 +45,6 @@ export default function MyTasksList(){
     })()
    }, []);
 
-
     //add new tasks
    const seeMoreTasks = useCallback(async()=>{
         if (loading || !hasMore) return;
@@ -56,7 +57,7 @@ export default function MyTasksList(){
    }, [quantity, loading, hasMore, fetchTasks])
 
     return(
-        <div className="border-2 border-primary-grey-300">
+        <div ref={taskContainerRef} className="border-2 border-primary-grey-300">
             {
                 tasks?.map(t=>{
                     return(
@@ -73,7 +74,9 @@ export default function MyTasksList(){
                 hasMore && 
                 <button 
                     disabled={loading}
-                    onClick={seeMoreTasks} type="button" className="p-4 text-primary-grey-100 text-center w-full"
+                    onClick={seeMoreTasks} 
+                    type="button" 
+                    className="p-4 text-primary-grey-100 text-center w-full"
                 >
                     {loading ? "Loading..." : "See More"}
                 </button>

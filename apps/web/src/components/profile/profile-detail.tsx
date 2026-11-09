@@ -2,9 +2,9 @@ interface ProfileDetailProps{
     leftImage:string,
     rightImage:string,
     value?:string,
+    setShowDetails?:React.Dispatch<React.SetStateAction<boolean>>,
     onClick?: (e:React.MouseEvent<HTMLImageElement, MouseEvent>)=>void,
 }
-
 export default function ProfileDetail({ leftImage, rightImage, value, onClick}:ProfileDetailProps){
     return(
         <div className="mt-2">
