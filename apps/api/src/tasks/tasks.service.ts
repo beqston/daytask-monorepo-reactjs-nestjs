@@ -108,6 +108,10 @@ async myTasks(id: string, date?: string) {
   });
 }
 
+changePrivacy(){
+  
+}
+
   findOne(id: number) {
     return `This action returns a #${id} task`;
   }
