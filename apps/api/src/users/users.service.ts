@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -70,6 +69,15 @@ export class UsersService {
         fullName:true
       }
     });
+  }
+  
+  changePrivacy(id:string, isPublic:boolean){
+    return this.prisma.user.update({
+      where:{id},
+      data:{
+        isPublic
+      }
+    })
   }
 
 }

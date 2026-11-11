@@ -88,29 +88,25 @@ async findMyTasksForProfile(authorId: string, qnt: number = 3) {
     });
   }
 
-async myTasks(id: string, date?: string) {
-  if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    throw new BadRequestException('Date must be in YYYY-MM-DD format');
+  async myTasks(id: string, date?: string) {
+    if (date && !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new BadRequestException('Date must be in YYYY-MM-DD format');
+    }
+
+    const targetDate = date ?? new Date().toISOString().split('T')[0];
+
+    return this.prisma.task.findMany({
+      where: {
+        date: targetDate,
+        OR: [
+          { authorId: id },
+          { members: { some: { id } } },
+        ],
+      },
+      include: this.taskInclude,
+      orderBy: { time: 'desc' },
+    });
   }
-
-  const targetDate = date ?? new Date().toISOString().split('T')[0];
-
-  return this.prisma.task.findMany({
-    where: {
-      date: targetDate,
-      OR: [
-        { authorId: id },
-        { members: { some: { id } } },
-      ],
-    },
-    include: this.taskInclude,
-    orderBy: { time: 'desc' },
-  });
-}
-
-changePrivacy(){
-  
-}
 
   findOne(id: number) {
     return `This action returns a #${id} task`;

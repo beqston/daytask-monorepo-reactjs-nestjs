@@ -33,7 +33,12 @@ export class UsersController {
     return user;
   }
 
-  
+
+  @Post('change-privacy')
+  changePrivacy(@GetUser('id') id:string, @Body("isPublic") isPublic:boolean){
+    return this.usersService.changePrivacy(id, isPublic);
+  }
+
   @Get()
   findAll(@GetUser("id") id:string) {
     return this.usersService.findAll(id);
