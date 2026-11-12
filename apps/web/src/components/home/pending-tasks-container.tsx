@@ -7,7 +7,7 @@ import { Loading } from '../ui/loading';
 import ErrorMessage from '../error/error';
 import { isAxiosError } from 'axios';
 
-export default function OnGoingProjectContaiiner(){
+export default function PendingTasksContainer(){
     const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -58,7 +58,7 @@ export default function OnGoingProjectContaiiner(){
                 pendingTasks.map((task)=>{
                     return(
                         <article key={task.id} className='text-primary-pure-white bg-light-blue-100 flex flex-col gap-8 p-8 mt-8 '>
-                            <h2 className='text-3xl'>{task.title}</h2>
+                            <h2 className='text-3xl first-letter:uppercase'>{task.title}</h2>
                             <div className="flex justify-between">
                                 <div className="flex flex-col gap-2">
                                     <p className='text-xl'>Team members</p>

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import InputsWrapper from "../components/profile/inputs-wrapper";
+import ProfileWrapper from "../components/profile/profile-wrapper";
 import ProfileHead from "../components/profile/profile-head";
 import ProfileImageContainer from "../components/profile/profile-image-container";
 import PagesWrapper from "../components/ui/pages-wrapper";
@@ -28,7 +28,7 @@ export default function Profile(){
         <PagesWrapper>
             <ProfileHead />
             <ProfileImageContainer />
-            <InputsWrapper handleLogout={handleLogout} />
+            <ProfileWrapper handleLogout={handleLogout} />
             
             {
                 loading && <Loading />

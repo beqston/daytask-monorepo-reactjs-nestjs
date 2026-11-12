@@ -13,7 +13,7 @@ export default function PrivacyContainer({leftImage, rightImage}:ProfileDetailsP
     return(
         <>
             <ProfileDetail onClick={handleShowPrivacy} leftImage={leftImage} value="Privacy" rightImage={rightImage}/>
-            <PrivacyList />
+            {showPrivacy && <PrivacyList />}
         </>
     )
 }

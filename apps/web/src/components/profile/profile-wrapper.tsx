@@ -11,7 +11,6 @@ import { useAppSelector } from "../../store/hooks"
 import { useState } from "react"
 import EditInput from "./edit-input"
 import ProfileDetail from "./profile-detail"
-import MyTasksList from "./my-tasks-list"
 import MyTasksContainer from "./my-tasks-container"
 import PrivacyContainer from "./privacy-contaiiner"
 
@@ -19,7 +18,7 @@ export interface InputWrapperPropsType{
     handleLogout: () => Promise<void>;
 }
 
-export default function InputsWrapper({handleLogout}:InputWrapperPropsType){
+export default function ProfileWrapper({handleLogout}:InputWrapperPropsType){
     const [showEdit, setShowEdit] = useState(false);
     const [showEditObj, setShowEditObj] = useState({
         name:"",
@@ -44,7 +43,7 @@ export default function InputsWrapper({handleLogout}:InputWrapperPropsType){
     
     return(
         <div>
-            <form className="flex flex-col gap-2">
+            <section className="flex flex-col gap-2">
                 <ProfileDetail onClick={()=>showEditinput("fullName", "(?=.{1,48}$)[a-zA-Z]+( [a-zA-Z]+)+", "text" )} leftImage={useradd} value={userObj.fullName} rightImage={edit}/>
                 <ProfileDetail onClick={()=>showEditinput("email", "(?=.{1,254}$)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,24}", "email" )} leftImage={usertag} value={userObj.email} rightImage={edit}/>
                 <ProfileDetail onClick={()=>showEditinput("password", "(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}", "password" )} leftImage={lock} value="Password" rightImage={edit}/>
@@ -52,7 +51,7 @@ export default function InputsWrapper({handleLogout}:InputWrapperPropsType){
                 <PrivacyContainer leftImage={privacy} rightImage={arrowdown}/>
                 <ProfileDetail leftImage={setting} value="Setting" rightImage={arrowdown}/>
                 <Logout handleLogout={handleLogout}/>
-            </form>
+            </section>
 
 
             {

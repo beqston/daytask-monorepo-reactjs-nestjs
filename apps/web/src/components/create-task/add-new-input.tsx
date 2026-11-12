@@ -31,7 +31,7 @@ export default function AddNewInput({onChange, value}:TextFieldProps){
                             id="subtask" 
                             name="subtask" 
                             placeholder="Sub Task" 
-                            pattern="[a-zA-Z0-9\s\-_]"
+                            pattern="[a-zA-Z0-9\s\-_]+"
                             title="Use only alphabets, number, -, _"
                         />
                     </div>

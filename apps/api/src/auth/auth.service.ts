@@ -90,7 +90,7 @@ export class AuthService {
   }
 
   async logout(id:string){
-    return await this.prisma.user.update({where:{id}, data:{hashedRefreshToken:null}});
+    return this.prisma.user.update({where:{id}, data:{hashedRefreshToken:null, isActive:false}});
   }
 
   async findById(id:string){
@@ -104,7 +104,7 @@ export class AuthService {
       email:user.email,
       role:user.role,
       fullName:user.fullName,
-      imageUrl:user.imageUrl
+      imageUrl:user.imageUrl,
      }
   }
 }

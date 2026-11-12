@@ -71,12 +71,12 @@ export default function CompleteTask() {
               shrink-0
               w-[85%] sm:w-[70%] md:w-[55%] lg:w-[45%] xl:w-[40%]
               overflow-hidden border-2 border-white p-2
-              ${isHighlighted ? 'bg-[#FED36A] text-black' : 'bg-[#455A64] text-white'}
+              ${isHighlighted ? 'bg-primary-yellow-100 text-black' : 'bg-light-blue-100 text-white'}
             `}
           >
             <div className="grid grid-rows-2">
               {/* Task title */}
-              <h3 className="text-3xl font-bold break-words">{item.title}</h3>
+              <h3 className="text-3xl font-bold wrap-break-word first-letter:uppercase">{item.title}</h3>
 
               {/* Task details */}
               <div className="mt-4">

@@ -1,6 +1,6 @@
 import CompleteTask from '../components/home/complete-task'
 import Navbar from '../components/ui/navbar'
-import OnGoingProjectContaiiner from '../components/home/project-container'
+import PendingTasksContainer from '../components/home/pending-tasks-container'
 import PagesWrapper from '../components/ui/pages-wrapper'
 import HomeHead from '../components/home/home-head'
 import InputContainer from '../components/home/input-container'
@@ -33,7 +33,7 @@ export default function Home(){
                 <OngoingProjectsHead />
 
                 {/* ongoing projects container */}
-                <OnGoingProjectContaiiner  />
+                <PendingTasksContainer  />
             </PendingTasksWrapper>
 
 

@@ -80,4 +80,16 @@ export class UsersService {
     })
   }
 
+  isPublic(id:string){
+    return this.prisma.user.findUnique(
+      {
+        where:{
+          id
+        },
+        select:{
+          isPublic:true
+        }
+      }
+    )
+  }
 }

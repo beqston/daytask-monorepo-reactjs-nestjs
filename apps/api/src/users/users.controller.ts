@@ -10,7 +10,6 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
   ) {}
-
   @Public(true)
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Res({passthrough:true}) res:Response) {
@@ -22,7 +21,6 @@ export class UsersController {
       sameSite:"lax",
       maxAge: 15 * 60 * 1000
     });
-
     res.cookie("refresh_token", refreshToken, {
       secure:process.env.NODE_ENV === 'production',
       httpOnly:true,
@@ -33,30 +31,18 @@ export class UsersController {
     return user;
   }
 
-
   @Post('change-privacy')
   changePrivacy(@GetUser('id') id:string, @Body("isPublic") isPublic:boolean){
     return this.usersService.changePrivacy(id, isPublic);
+  }
+
+  @Get('check-privacy')
+  isPublic(@GetUser('id') id:string){
+    return this.usersService.isPublic(id)
   }
 
   @Get()
   findAll(@GetUser("id") id:string) {
     return this.usersService.findAll(id);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
-
 }
