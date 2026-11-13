@@ -13,8 +13,9 @@ export class UsersService {
     private jwtService:JwtService
   ){}
 
+
   async create(createUserDto: CreateUserDto) {
-  // object destructuring
+    // object destructuring
     const {password, ...userData} =  createUserDto;
 
     // check is email exist
@@ -92,4 +93,14 @@ export class UsersService {
       }
     )
   }
+
+  changeActive(id:string, isActive:boolean){
+    return this.prisma.user.update({
+      where:{id},
+      data:{
+        isActive
+      }
+    })
+  }
 }
+

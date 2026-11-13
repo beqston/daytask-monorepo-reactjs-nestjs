@@ -8,6 +8,7 @@ export default function PrivacyList(){
     const[error, setError] = useState(false);
     const[isSuccess, setIsSuccess] = useState(false);
     const[errorText, setErrorText] = useState("");
+    const[isActive, setIsActive] = useState(true);
 
     async function getPrivacy(){
         try {
@@ -39,22 +40,32 @@ export default function PrivacyList(){
                     ? error.response?.data?.message || "Something went wrong!"
                     : "Something went wrong!"
             );
-        }finally{
-            setTimeout(() => {
-               if(isSuccess){
-                 setIsSuccess(false);
-               }
+        }
+    }
 
-               if(error){
-                setError(false);
-               }
-            }, 4000);
+    useEffect(() => {
+        if (!isSuccess && !error) return;
+
+        const timer = setTimeout(() => {
+            setIsSuccess(false);
+            setError(false);
+        }, 4000);
+
+        return () => clearTimeout(timer);
+    }, [isSuccess, error]);
+
+    async function ChangeActive(){
+        try {
+            
+        } catch (error) {
+            
         }
     }
 
 
     return(
         <div className="text-white">
+            {/* Profile visibility container */}
             <div className="flex justify-between">
                 <h2>Profile Visibility: </h2>
                 <form className="flex gap-4">
@@ -82,6 +93,20 @@ export default function PrivacyList(){
                         />
                     </div>
                 </form>
+            </div>
+            {/* Toggle active container */}
+            <div className="flex justify-between mt-2">
+                <h3>Change active status:</h3>
+                <div
+                    onClick={() => setIsActive(prev => !prev)}
+                    className="w-14 h-7 rounded-2xl bg-primary-blue-100 relative cursor-pointer"
+                >
+                    <div
+                        className={`absolute w-5 h-5 bg-emerald-700 rounded-full top-1 left-1 transition-transform duration-500 ease-in-out ${
+                        isActive ? "translate-x-7" : "translate-x-0"
+                        }`}
+                    ></div>
+                </div>
             </div>
 
             {error && <ErrorMessage text={errorText} />}
