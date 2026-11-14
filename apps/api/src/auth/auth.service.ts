@@ -45,7 +45,7 @@ export class AuthService {
     // save hashed refresh token in database
     await this.prisma.user.update({
       where: { id: user.id },
-      data: { hashedRefreshToken },
+      data: { isActive:true, hashedRefreshToken },
     });
     return{
       user:{

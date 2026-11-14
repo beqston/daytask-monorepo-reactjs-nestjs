@@ -36,14 +36,14 @@ export class UsersController {
     return this.usersService.changePrivacy(id, isPublic);
   }
 
-  @Post('change-privacy')
+  @Post('change-active')
   changeActive(@GetUser('id') id:string, @Body("isActive") isActive:boolean){
-    return this.usersService.changePrivacy(id, isActive);
+    return this.usersService.changeActive(id, isActive);
   }
 
   @Get('check-privacy')
-  isPublic(@GetUser('id') id:string){
-    return this.usersService.isPublic(id)
+  checkPrivacy(@GetUser('id') id:string){
+    return this.usersService.checkPrivacy(id)
   }
 
   @Get()

@@ -81,14 +81,15 @@ export class UsersService {
     })
   }
 
-  isPublic(id:string){
+  checkPrivacy(id:string){
     return this.prisma.user.findUnique(
       {
         where:{
           id
         },
         select:{
-          isPublic:true
+          isPublic:true,
+          isActive:true,
         }
       }
     )
