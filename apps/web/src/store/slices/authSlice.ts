@@ -51,6 +51,21 @@ export const loginUser = createAsyncThunk<User, LoginCredentials, {rejectValue:s
     }
 )
 
+ //delete user
+ export const deleteUser = createAsyncThunk<void, void, {rejectValue:string}>(
+    "auth/delete",
+    async(_, {rejectWithValue})=>{
+        try {
+            await api.post("/auth/delete-account");
+        } catch (err) {
+            if(axios.isAxiosError(err)){
+                return rejectWithValue(err.response?.data?.message || "Invalid credentials");
+            }
+            return rejectWithValue("Uknown error");
+        }
+    }
+ )
+
 const initialState:AuthState = {
     isAuth:false,
     loading:!!localStorage.getItem("isLoggedIn"),
@@ -122,6 +137,20 @@ const authSlice= createSlice({
         .addCase(logoutUser.rejected, (state, action)=>{
             state.loading = false;
             state.error = action.payload as string;
+        })
+        .addCase(deleteUser.pending, (state)=>{
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(deleteUser.fulfilled, (state)=>{
+            state.user = null;
+            state.loading=false;
+            state.isAuth=false;
+        })
+        .addCase(deleteUser.rejected, (state)=>{
+            state.error = "Failed delete account!";
+            state.loading = false;
+            state.isAuth = true;
         })
         
     },

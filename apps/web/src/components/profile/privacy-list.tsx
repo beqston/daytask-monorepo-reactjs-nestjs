@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../api/api";
 import { isAxiosError } from "axios";
 import ErrorMessage from "../error/error";
+import { useNavigate } from "react-router-dom";
 
 
 export default function PrivacyList() {
@@ -11,6 +12,10 @@ export default function PrivacyList() {
     const [isSuccessText, setIsSuccessText] = useState("");
     const [errorText, setErrorText] = useState("");
     const [isActive, setIsActive] = useState(true);
+    // Delete account ref for div element and state
+    const deleteRef = useRef<HTMLDivElement>(null);
+    const[showDelete, setShowDelete] = useState(false);
+    const navigate = useNavigate();
 
     async function getPrivacy() {
         try {
@@ -74,9 +79,36 @@ export default function PrivacyList() {
         );
     };
 
+    async function handleDeleteUser() {
+        setIsSuccess(false);
+        setError(false);
+        try {
+            await api.delete('/users/delete-account')
+            setIsSuccess(true);
+            setIsSuccessText("Account deleted!");
+            navigate('/sign-in');
+        } catch (error) {
+            setError(true);
+            setErrorText(isAxiosError(error)?error.response?.data?.message || "Something went wrong!":"Something went wrong!")
+        }
+    }
+
     useEffect(() => {
         getPrivacy();
     }, []);
+
+    useEffect(()=>{
+        function handlePointerDown(e: MouseEvent){
+            if(deleteRef.current && !deleteRef.current.contains(e.target as Node)){
+                setShowDelete(false);
+            }
+        }
+
+        window.addEventListener('pointerdown', handlePointerDown);
+        return ()=>{
+            window.removeEventListener("pointerdown", handlePointerDown)
+        }
+    }, [showDelete])
 
     useEffect(() => {
         if (!isSuccess && !error) return;
@@ -142,6 +174,11 @@ export default function PrivacyList() {
                     <span>On</span>
                 </div>
             </div>
+            
+            {/* Delete account */}
+            <div className="flex justify-end mt-2">
+                <button onClick={()=>setShowDelete(!showDelete)} type="button" className="bg-primary-blue-100 p-2 rounded-2xl text-red-300">Delete Account</button>
+            </div>
 
             {error && <ErrorMessage text={errorText} />}
             {isSuccess && (
@@ -149,6 +186,18 @@ export default function PrivacyList() {
                     {isSuccessText}
                 </p>
             )}
+
+            {
+                showDelete &&
+                <div ref={deleteRef} className="fixed top-[10vh]  bg-primary-pure-black h-30 left-0 translate-full text-white w-1/3 opacity-90">
+                    <p className="w-full text-center text-xl">Are you sure delete your account?</p>
+                    <div className="w-full grid grid-cols-2 gap-x-3 p-2">
+                        <button onClick={()=>setShowDelete(!showDelete)} type="button" className="p-4 bg-red-300 text-xl font-bold rounded-2xl">No</button>
+                        <button onClick={handleDeleteUser} type="button" className="p-4 bg-green-300 text-xl font-bold rounded-2xl">Yes</button>
+                    </div>
+                </div>
+            }
+            
         </div>
     );
 }

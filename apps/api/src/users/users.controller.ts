@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Public } from 'src/auth/decorators/public-decorator';
@@ -46,6 +46,10 @@ export class UsersController {
     return this.usersService.checkPrivacy(id)
   }
 
+  @Delete('delete-account')
+  deleteUser(@GetUser("id") id:string){
+    return this.usersService.deleteUser(id);
+  }
   @Get()
   findAll(@GetUser("id") id:string) {
     return this.usersService.findAll(id);

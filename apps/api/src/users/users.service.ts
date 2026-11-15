@@ -71,6 +71,11 @@ export class UsersService {
       }
     });
   }
+  deleteUser(id:string){
+    return this.prisma.user.delete({
+      where:{id}
+    })
+  }
   
   changePrivacy(id:string, isPublic:boolean){
     return this.prisma.user.update({
