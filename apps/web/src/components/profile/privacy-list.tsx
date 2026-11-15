@@ -3,6 +3,8 @@ import api from "../../api/api";
 import { isAxiosError } from "axios";
 import ErrorMessage from "../error/error";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../store/hooks";
+import {deleteUser} from "../../store/slices/authSlice";
 
 
 export default function PrivacyList() {
@@ -16,6 +18,7 @@ export default function PrivacyList() {
     const deleteRef = useRef<HTMLDivElement>(null);
     const[showDelete, setShowDelete] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     async function getPrivacy() {
         try {
@@ -83,13 +86,14 @@ export default function PrivacyList() {
         setIsSuccess(false);
         setError(false);
         try {
-            await api.delete('/users/delete-account')
+            await dispatch(deleteUser()).unwrap();
             setIsSuccess(true);
             setIsSuccessText("Account deleted!");
+            localStorage.removeItem("isLoggedIn");
             navigate('/sign-in');
-        } catch (error) {
+        } catch (err) {
             setError(true);
-            setErrorText(isAxiosError(error)?error.response?.data?.message || "Something went wrong!":"Something went wrong!")
+            setErrorText(typeof err === "string" ? err : "Something went wrong!");
         }
     }
 

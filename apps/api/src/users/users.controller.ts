@@ -47,9 +47,10 @@ export class UsersController {
   }
 
   @Delete('delete-account')
-  deleteUser(@GetUser("id") id:string){
-    return this.usersService.deleteUser(id);
+  deleteUser(@GetUser("id") id:string, @Res({passthrough:true}) res:Response){
+    return this.usersService.deleteUser(id, res);
   }
+
   @Get()
   findAll(@GetUser("id") id:string) {
     return this.usersService.findAll(id);

@@ -36,35 +36,42 @@ export const logoutUser = createAsyncThunk<void, void, {rejectValue:string}>('/a
 })
 
 // login user
-export const loginUser = createAsyncThunk<User, LoginCredentials, {rejectValue:string}>(
-    "auth/login", 
-    async(credentials, {rejectWithValue})=>{
-        try {
-            const { data } = await api.post("/auth/login", credentials);
-            return data.user;
-        } catch (err) {
-            if(axios.isAxiosError(err)){
-                return rejectWithValue(err.response?.data?.message || "Invalid credentials");
-            }
-            return rejectWithValue("Uknown error");
-        }
+export const loginUser = createAsyncThunk<User, LoginCredentials, { rejectValue: string }>(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/auth/login", credentials);
+      return data.user;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message;
+        return rejectWithValue(
+          (Array.isArray(message) ? message[0] : message) || "Invalid credentials"
+        );
+      }
+      return rejectWithValue("Unknown error");
     }
-)
+  }
+);
 
  //delete user
- export const deleteUser = createAsyncThunk<void, void, {rejectValue:string}>(
-    "auth/delete",
-    async(_, {rejectWithValue})=>{
-        try {
-            await api.post("/auth/delete-account");
-        } catch (err) {
-            if(axios.isAxiosError(err)){
-                return rejectWithValue(err.response?.data?.message || "Invalid credentials");
-            }
-            return rejectWithValue("Uknown error");
-        }
+export const deleteUser = createAsyncThunk<void, void, { rejectValue: string }>(
+  "auth/delete",
+  async (_, { rejectWithValue }) => {
+    try {
+      await api.delete("/users/delete-account");
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message;
+        return rejectWithValue(
+          (Array.isArray(message) ? message[0] : message) ||
+            "Failed to delete account"
+        );
+      }
+      return rejectWithValue("Unknown error");
     }
- )
+  }
+);
 
 const initialState:AuthState = {
     isAuth:false,
@@ -89,7 +96,10 @@ const authSlice= createSlice({
             state.isAuth=false;
             state.user=null;
             state.loading=false;
-        }
+        },
+        clearError(state) {
+            state.error = null;
+        },
     },
     extraReducers(builder) {
         builder
@@ -118,11 +128,11 @@ const authSlice= createSlice({
             state.user = action.payload;
             state.loading= false;
         })
-        .addCase(loginUser.rejected, (state)=>{
-            state.error="Login failed";
-            state.loading=false;
-            state.user=null;
-            state.isAuth=false;
+        .addCase(loginUser.rejected, (state, action)=>{
+            state.error = action.payload ?? "Login failed";
+            state.loading = false;
+            state.user = null;
+            state.isAuth = false;
         })
         .addCase(logoutUser.pending, (state)=>{
             state.error=null;
@@ -138,19 +148,18 @@ const authSlice= createSlice({
             state.loading = false;
             state.error = action.payload as string;
         })
-        .addCase(deleteUser.pending, (state)=>{
+        .addCase(deleteUser.pending, (state) => {
             state.loading = true;
             state.error = null;
         })
-        .addCase(deleteUser.fulfilled, (state)=>{
+        .addCase(deleteUser.fulfilled, (state) => {
             state.user = null;
-            state.loading=false;
-            state.isAuth=false;
-        })
-        .addCase(deleteUser.rejected, (state)=>{
-            state.error = "Failed delete account!";
+            state.isAuth = false;
             state.loading = false;
-            state.isAuth = true;
+        })
+        .addCase(deleteUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload ?? "Failed to delete account";
         })
         
     },

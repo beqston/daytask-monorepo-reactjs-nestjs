@@ -1,9 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from "bcrypt";
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +14,13 @@ export class UsersService {
     private configService:ConfigService,
     private jwtService:JwtService
   ){}
-
+  private get cookieOptions() {
+    return {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax' as const,
+    };
+  }
 
   async create(createUserDto: CreateUserDto) {
     // object destructuring
@@ -71,10 +79,24 @@ export class UsersService {
       }
     });
   }
-  deleteUser(id:string){
-    return this.prisma.user.delete({
-      where:{id}
-    })
+
+
+  async deleteUser(id: string, res: Response) {
+    try {
+      await this.prisma.user.delete({ where: { id } });
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        throw new NotFoundException('User not found');
+      }
+      throw new InternalServerErrorException('User not deleted');
+    }
+
+    res.clearCookie('refresh_token', this.cookieOptions);
+    res.clearCookie('access_token', this.cookieOptions);
+    return { message: 'Account deleted' };
   }
   
   changePrivacy(id:string, isPublic:boolean){
