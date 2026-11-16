@@ -97,9 +97,6 @@ const authSlice= createSlice({
             state.user=null;
             state.loading=false;
         },
-        clearError(state) {
-            state.error = null;
-        },
     },
     extraReducers(builder) {
         builder
