@@ -9,23 +9,23 @@ interface DeleteAccountProps {
 }
 
 export default function DeleteAccount({ onError }: DeleteAccountProps) {
-    // ref wraps both the button and the confirm dialog,
-    // so clicking the button is not treated as an "outside" click
+    
     const containerRef = useRef<HTMLDivElement>(null);
     const [showDelete, setShowDelete] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
+    // We control buttons
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const cancelRef = useRef<HTMLButtonElement>(null);
+    const dialogRef = useRef<HTMLDivElement>(null);
 
     // remove user account
     async function handleDeleteUser() {
         setIsDeleting(true);
         try {
             await dispatch(deleteUser()).unwrap();
-            // ideally this lives inside the deleteUser thunk / authSlice fulfilled case
             localStorage.removeItem("isLoggedIn");
-            // PrivacyList unmounts after navigation, so pass the message via route state
-            // and show it on the sign-in page: useLocation().state?.message
             navigate("/sign-in", { state: { message: "Account deleted!" } });
         } catch (err) {
             setShowDelete(false);
@@ -38,7 +38,7 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
     // close on outside click / Escape (only while the dialog is open)
     useEffect(() => {
         if (!showDelete) return;
-
+        cancelRef.current?.focus();
         function handlePointerDown(e: PointerEvent) {
             if (
                 containerRef.current &&
@@ -49,7 +49,27 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
         }
 
         function handleKeyDown(e: KeyboardEvent) {
-            if (e.key === "Escape") setShowDelete(false);
+            if (e.key === "Escape") {
+                setShowDelete(false);
+                return;
+            }
+            if (e.key !== "Tab") return;
+
+            const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+                "button:not([disabled])"
+            );
+            if (!focusable?.length) return;
+
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
         }
 
         window.addEventListener("pointerdown", handlePointerDown);
@@ -57,6 +77,7 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
         return () => {
             window.removeEventListener("pointerdown", handlePointerDown);
             window.removeEventListener("keydown", handleKeyDown);
+            triggerRef.current?.focus();
         };
     }, [showDelete]);
 
@@ -64,6 +85,7 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
         <div ref={containerRef}>
             <div className="flex justify-end mt-2">
                 <button
+                    ref={triggerRef}
                     onClick={() => setShowDelete(true)}
                     type="button"
                     className="bg-primary-blue-100 p-2 rounded-2xl text-red-300"
@@ -74,9 +96,11 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
 
             {showDelete && (
                 <div
-                    role="dialog"
+                    ref={dialogRef}
+                    role="alertdialog"
                     aria-modal="true"
                     aria-labelledby="delete-title"
+                    aria-describedby="delete-desc"
                     className="fixed top-[10vh] left-1/2 -translate-x-1/2 w-1/3 p-4 bg-primary-pure-black text-white opacity-90"
                 >
                     <p id="delete-title" className="w-full text-center text-xl">
@@ -84,10 +108,11 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
                     </p>
                     <div className="w-full grid grid-cols-2 gap-x-3 pt-4">
                         <button
+                            ref={cancelRef}
                             onClick={() => setShowDelete(false)}
                             type="button"
                             disabled={isDeleting}
-                            className="p-4 bg-red-300 text-xl font-bold rounded-2xl disabled:opacity-60"
+                            className="bg-red-300 text-xl font-bold rounded-2xl disabled:opacity-70"
                         >
                             No
                         </button>
@@ -95,9 +120,10 @@ export default function DeleteAccount({ onError }: DeleteAccountProps) {
                             onClick={handleDeleteUser}
                             type="button"
                             disabled={isDeleting}
-                            className="p-4 bg-green-300 text-xl font-bold rounded-2xl disabled:opacity-60"
+                            className="p-4 bg-green-300 text-xl font-bold rounded-2xl disabled:opacity-70"
+                            aria-busy={isDeleting}
                         >
-                            Yes
+                            {isDeleting?"Deleting...":"Yes"}
                         </button>
                     </div>
                 </div>
