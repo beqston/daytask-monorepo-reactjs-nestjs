@@ -13,6 +13,7 @@ import EditInput from "./edit-input"
 import ProfileDetail from "./profile-detail"
 import MyTasksContainer from "./my-tasks-container"
 import PrivacyContainer from "./privacy-contaiiner"
+import SettingContainer from "./setting-container"
 
 export interface InputWrapperPropsType{
     handleLogout: () => Promise<void>;
@@ -49,7 +50,7 @@ export default function ProfileWrapper({handleLogout}:InputWrapperPropsType){
                 <ProfileDetail onClick={()=>showEditinput("password", "(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}", "password" )} leftImage={lock} value="Password" rightImage={edit}/>
                 <MyTasksContainer leftImage={task} rightImage={arrowdown} />
                 <PrivacyContainer leftImage={privacy} rightImage={arrowdown}/>
-                <ProfileDetail leftImage={setting} value="Setting" rightImage={arrowdown}/>
+                <SettingContainer leftImage={setting} value="Setting" rightImage={arrowdown}/>
                 <Logout handleLogout={handleLogout}/>
             </section>
 
