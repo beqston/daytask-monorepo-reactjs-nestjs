@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Res, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Delete, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Public } from 'src/auth/decorators/public-decorator';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import {type Response } from 'express';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller({path:'users', version:"1"})
 export class UsersController {
@@ -29,6 +30,11 @@ export class UsersController {
     });
 
     return user;
+  }
+
+  @Patch('update-user')
+  updateUser(@GetUser("id") id:string, @Body() dto:UpdateUserDto){
+    return this.usersService.updateUser(id, dto);
   }
 
   @Post('change-privacy')

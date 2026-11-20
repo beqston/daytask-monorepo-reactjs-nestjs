@@ -19,35 +19,40 @@ export interface InputWrapperPropsType{
     handleLogout: () => Promise<void>;
 }
 
+type EdittField =  "email" | "fullName" | "password";
+
+interface EditConfig {
+    name:EdittField,
+    pattern:string,
+    type:string
+}
+
+const PATTERNS = {
+    fullName: String.raw`(?=.{1,48}$)[a-zA-Z]+( [a-zA-Z]+)+`,
+    email: String.raw`(?=.{1,254}$)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,24}`,
+    password: String.raw`(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}`,
+};
+
 export default function ProfileWrapper({handleLogout}:InputWrapperPropsType){
     const [showEdit, setShowEdit] = useState(false);
-    const [showEditObj, setShowEditObj] = useState({
-        name:"",
+    const [editConfig, setEditConfig] = useState<EditConfig >({
+        name: "email",
         pattern:"",
         type:"text"
     })
     const {user} = useAppSelector(state=>state.auth);
-    const userObj = {
-        fullName:user?.fullName,
-        email:user?.email,
-        password:""
+
+    function showEditinput(name: EdittField, pattern = "", type = "text") {
+        setEditConfig({ name, pattern, type });
+        setShowEdit(true);
     }
 
-    function showEditinput(name="", pattern="", type="text"){
-        const updatedObj = { name, pattern, type };
-        setShowEditObj(updatedObj);
-        setShowEdit(!showEdit)
-    }
-
-    function handleSubmit(){}
-
-    
     return(
         <div>
             <section className="flex flex-col gap-2">
-                <ProfileDetail onClick={()=>showEditinput("fullName", "(?=.{1,48}$)[a-zA-Z]+( [a-zA-Z]+)+", "text" )} leftImage={useradd} value={userObj.fullName} rightImage={edit}/>
-                <ProfileDetail onClick={()=>showEditinput("email", "(?=.{1,254}$)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,24}", "email" )} leftImage={usertag} value={userObj.email} rightImage={edit}/>
-                <ProfileDetail onClick={()=>showEditinput("password", "(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,128}", "password" )} leftImage={lock} value="Password" rightImage={edit}/>
+                <ProfileDetail onClick={()=>showEditinput("fullName", PATTERNS.fullName, "text" )} leftImage={useradd} value={user?.fullName} rightImage={edit}/>
+                <ProfileDetail onClick={()=>showEditinput("email", PATTERNS.email, "email" )} leftImage={usertag} value={user?.email} rightImage={edit}/>
+                <ProfileDetail onClick={()=>showEditinput("password", PATTERNS.password, "password" )} leftImage={lock} value="Password" rightImage={edit}/>
                 <MyTasksContainer leftImage={task} rightImage={arrowdown} />
                 <PrivacyContainer leftImage={privacy} rightImage={arrowdown}/>
                 <SettingContainer leftImage={setting} value="Setting" rightImage={arrowdown}/>
@@ -56,7 +61,7 @@ export default function ProfileWrapper({handleLogout}:InputWrapperPropsType){
 
 
             {
-                showEdit && <EditInput name={showEditObj.name} pattern={showEditObj.pattern} type={showEditObj.type} handleOnSubmit={handleSubmit} setShowEdit={setShowEdit} />
+                showEdit && <EditInput key={editConfig.name} name={editConfig.name} pattern={editConfig.pattern} type={editConfig.type} setShowEdit={setShowEdit} />
             }
 
         </div>

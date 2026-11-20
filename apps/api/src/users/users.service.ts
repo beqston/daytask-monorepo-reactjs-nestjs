@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -130,5 +131,27 @@ export class UsersService {
       }
     })
   }
-}
 
+  async updateUser(id:string, dto:UpdateUserDto){
+    // body is email, fullName, or password
+    const user = await this.prisma.user.findUnique({where:{id}});
+    if (!user) throw new NotFoundException('User not found!');
+    const data: Prisma.UserUpdateInput = {};
+
+    if(dto.email && dto.email !== user.email){
+      const taken = await this.prisma.user.findUnique({where:{email:dto.email}});
+      if(taken) throw new ConflictException("Email already exist!");
+      data.email = dto.email;
+    }
+
+    if(dto.fullName && dto.fullName !== user.fullName) data.fullName = dto.fullName;
+    if(dto.password && dto.password !== user.password) data.password = await bcrypt.hash(dto.password, 10);
+
+    const {password, ...updated} = await this.prisma.user.update({
+      where:{id},
+      data
+    });
+
+    return updated;
+  }
+}
