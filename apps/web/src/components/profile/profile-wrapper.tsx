@@ -36,7 +36,7 @@ const PATTERNS = {
 export default function ProfileWrapper({handleLogout}:InputWrapperPropsType){
     const [showEdit, setShowEdit] = useState(false);
     const [editConfig, setEditConfig] = useState<EditConfig >({
-        name: "email",
+        name: "fullName",
         pattern:"",
         type:"text"
     })
