@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Res, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Delete, Patch, UseGuards, UseInterceptors, Req, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Public } from 'src/auth/decorators/public-decorator';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import {type Response } from 'express';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller({path:'users', version:"1"})
 export class UsersController {
@@ -60,5 +62,23 @@ export class UsersController {
   @Get()
   findAll(@GetUser("id") id:string) {
     return this.usersService.findAll(id);
+  }
+
+  @Patch("me/avatar")
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor("image"))
+  uploadAvatar(
+    @Req() req,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 4 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /^image\/(jpeg|png|webp)$/ }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    return this.usersService.updateAvatar(req.user.id, file);
   }
 }

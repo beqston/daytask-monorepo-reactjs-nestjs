@@ -7,13 +7,15 @@ import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma:PrismaService, 
     private configService:ConfigService,
-    private jwtService:JwtService
+    private jwtService:JwtService,
+    private cloudinaryService:CloudinaryService
   ){}
   private get cookieOptions() {
     return {
@@ -151,6 +153,26 @@ export class UsersService {
       where:{id},
       data
     });
+
+    return updated;
+  }
+
+  async updateAvatar(id:string, file:Express.Multer.File){
+    const user = await this.prisma.user.findUnique({where:{id}});
+    const oldPublicId = user?.imagePublicId;
+
+    // upload new image
+    const result = await this.cloudinaryService.uploadImage(file);
+
+    //save urls in database
+    const updated = this.prisma.user.update({where:{id}, data:{
+      imagePublicId:result.public_id,
+      imageUrl:result.secure_url
+    }});
+
+    if(oldPublicId){
+      await this.cloudinaryService.deleteImage(oldPublicId).catch(() => {});
+    }
 
     return updated;
   }

@@ -4,15 +4,35 @@ import { useEffect, useState, type ChangeEvent } from "react"
 import api from "../../api/api";
 import { isAxiosError } from "axios";
 
+const MAX_SIZE = 4 * 1024 * 1024;
+
 export default function ProfileImageContainer(){
     const[preview, setPreview] = useState<string | null>(null);
     const[error, setError] = useState<string | null>(null);
+    
     async function handleChange(e: ChangeEvent<HTMLInputElement>){
         setError(null);
         const file = e.target.files?.[0]
         if(!file) return;
+
+        // check file type
+        if(!file.type.startsWith("image/")){
+            setError("Only image files are allowed");
+            e.target.value = "";
+            return;
+        }
+
+        // check file size
+        if(file.size > MAX_SIZE){
+            setError("File size must not exceed 4MB");
+            e.target.value = "";
+            return;
+        }
+
+        const formdata = new FormData();
+        formdata.append("image", file);
        try {
-            await api.post('/upload-profile-image');
+            await api.patch('/me/avatar', formdata);
             setPreview(URL.createObjectURL(file));
        } catch (error:unknown) {
             const somethingError = "Something went wrong!" 
@@ -39,7 +59,7 @@ export default function ProfileImageContainer(){
     return(
         <div className="grid place-items-center p-10">
             <div className="w-32 h-32 rounded-full relative p-1 border-primary-yellow-100 border-2">
-                <img src={preview ?? profile} alt="profile-image" className="objec-fill w-full h-full rounded-full" />
+                <img src={preview ?? profile} alt="profile-image" className="object-cover w-full h-full rounded-full" />
 
                 <div className="absolute right-1 bottom-2 bg-primary-grey-300 rounded-full w-8 h-8 flex justify-center items-center">
                     <label htmlFor="image" className="w-5 h-5 cursor-pointer">
