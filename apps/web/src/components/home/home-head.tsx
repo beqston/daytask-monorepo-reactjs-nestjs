@@ -12,7 +12,7 @@ export default function HomeHead(){
             </div>
 
             <div>
-                <Link to={'/profile'}><img width={48} height={48} src={user?.imageUrl ?? profile} alt='profile' /></Link>
+                <Link to={'/profile'}><img width={48} height={48} className='rounded-full' src={user?.imageUrl ?? profile} alt='profile' /></Link>
             </div>
         </div>
     )

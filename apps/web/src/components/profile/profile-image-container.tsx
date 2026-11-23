@@ -3,12 +3,14 @@ import addsquare from "/images/addsquare.png"
 import { useEffect, useState, type ChangeEvent } from "react"
 import api from "../../api/api";
 import { isAxiosError } from "axios";
+import { useAppSelector } from "../../store/hooks";
 
 const MAX_SIZE = 4 * 1024 * 1024;
 
 export default function ProfileImageContainer(){
     const[preview, setPreview] = useState<string | null>(null);
     const[error, setError] = useState<string | null>(null);
+    const { user } = useAppSelector(state=>state.auth)
     
     async function handleChange(e: ChangeEvent<HTMLInputElement>){
         setError(null);
@@ -32,8 +34,8 @@ export default function ProfileImageContainer(){
         const formdata = new FormData();
         formdata.append("image", file);
        try {
-            await api.patch('/me/avatar', formdata);
             setPreview(URL.createObjectURL(file));
+            await api.patch('/users/me/avatar', formdata);
        } catch (error:unknown) {
             const somethingError = "Something went wrong!" 
             if(isAxiosError(error)){
@@ -42,8 +44,7 @@ export default function ProfileImageContainer(){
                 setError(typeof text == "string" && text?text:somethingError)
             }else{
                 setError(somethingError)
-            }
-            
+            } 
        }
     }
 
@@ -55,16 +56,15 @@ export default function ProfileImageContainer(){
     },[preview])
 
     
-    
     return(
         <div className="grid place-items-center p-10">
             <div className="w-32 h-32 rounded-full relative p-1 border-primary-yellow-100 border-2">
-                <img src={preview ?? profile} alt="profile-image" className="object-cover w-full h-full rounded-full" />
+                <img src={user?.imageUrl ?? profile} alt="profile-image" className="object-cover w-full h-full rounded-full" />
 
                 <div className="absolute right-1 bottom-2 bg-primary-grey-300 rounded-full w-8 h-8 flex justify-center items-center">
                     <label htmlFor="image" className="w-5 h-5 cursor-pointer">
                         <img src={addsquare} alt="addsquare" className="object-fill w-full h-full"/>
-                        <input onChange={handleChange} type="file" name="image" id="image" accept="image/*" className="hidden" />
+                        <input onChange={handleChange} type="file" name="image" id="image" accept="image/jpeg,image/png,image/webp" className="hidden" />
                     </label>
                 </div>
             </div>

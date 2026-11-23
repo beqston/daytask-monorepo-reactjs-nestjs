@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadGatewayException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import bcrypt from "bcrypt";
@@ -165,7 +165,7 @@ export class UsersService {
     const result = await this.cloudinaryService.uploadImage(file);
 
     //save urls in database
-    const updated = this.prisma.user.update({where:{id}, data:{
+    const updated = await this.prisma.user.update({where:{id}, data:{
       imagePublicId:result.public_id,
       imageUrl:result.secure_url
     }});
@@ -173,6 +173,26 @@ export class UsersService {
     if(oldPublicId){
       await this.cloudinaryService.deleteImage(oldPublicId).catch(() => {});
     }
+
+    return updated;
+  }
+
+  async removeAvatar(id: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { imagePublicId: true },
+    });
+
+    if (!user?.imagePublicId) throw new NotFoundException("Image not found!");
+
+    const updated = await this.prisma.user.update({
+      where: { id },
+      data: { imageUrl: null, imagePublicId: null },
+      select: { id: true, imageUrl: true },
+    });
+
+    const deleted = await this.cloudinaryService.deleteImage(user.imagePublicId);
+    if (!deleted) throw new BadGatewayException("Image was not deleted from Cloudinary");
 
     return updated;
   }

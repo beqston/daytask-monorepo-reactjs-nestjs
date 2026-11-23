@@ -81,4 +81,9 @@ export class UsersController {
   ) {
     return this.usersService.updateAvatar(req.user.id, file);
   }
+
+  @Delete('/remove/avatar')
+  removeAvatar(@GetUser("id") id:string){
+    return this.usersService.removeAvatar(id);
+  }
 }
