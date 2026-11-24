@@ -91,6 +91,11 @@ const authSlice= createSlice({
             state.loading = false;
 
         },
+        setUserImage:(state, action:PayloadAction<string | null>)=>{
+            if(state.user){
+                state.user.imageUrl = action.payload;
+            }
+        },
         logout(state){
             state.error=null;
             state.isAuth=false;
@@ -162,5 +167,5 @@ const authSlice= createSlice({
     },
 })
 
-export const { logout, setUser} =authSlice.actions;
+export const { logout, setUser, setUserImage} =authSlice.actions;
 export default authSlice.reducer;
