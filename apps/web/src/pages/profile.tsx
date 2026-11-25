@@ -19,7 +19,9 @@ export default function Profile(){
     async function handleLogout(){
         try {
             await dispatch(logoutUser()).unwrap();
-            navigate("/sign-in", { replace:true })
+            navigate("/sign-in", { replace:true });
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("theme");
         } catch (err:any) {
             setErrorText(err);
         }

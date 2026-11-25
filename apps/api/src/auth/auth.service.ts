@@ -5,15 +5,22 @@ import { ConfigService } from '@nestjs/config';
 import bcrypt from "bcrypt"
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class AuthService {
-
+  private readonly googleClient: OAuth2Client;
   constructor(
     private jwtService:JwtService,
     private configService:ConfigService,
     private prisma:PrismaService
-  ){}
+  ){
+    this.googleClient = new OAuth2Client(
+      this.configService.get<string>(
+        "auth.googleClientSecret"
+      )
+    )
+  }
 
   async generateTokens(payload:JwtPayloadType){
     const [acsessToken, refreshToken] = await Promise.all([
@@ -106,5 +113,20 @@ export class AuthService {
       fullName:user.fullName,
       imageUrl:user.imageUrl,
      }
+  }
+
+  async loginWithGoogle(idToken:string){
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken,
+      audience:this.configService.get<string>('auth.googleClientId')
+    });
+    
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email || !payload.sub) {
+      throw new UnauthorizedException('Invalid Google token payload');
+    }
+
+    return "google auth"
   }
 }

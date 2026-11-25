@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import {type Request, type Response} from "express"
@@ -86,5 +86,11 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   getMe(@GetUser("id") id:string){
     return this.authService.findById(id);
+  }
+
+  @Post('google/auth')
+  @Public()
+  googleLogin(@Body('credential') credential: string){
+    return this.authService.loginWithGoogle(credential);
   }
 }
