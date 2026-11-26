@@ -73,6 +73,9 @@ export class AuthService {
     const user = await this.prisma.user.findUnique({where:{email}});
     if(!user) throw new BadRequestException("Invalid credentials");
 
+    if(!user || !user.password){
+      throw new UnauthorizedException('Invalid credentials');
+    }
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if(!isPasswordValid) throw new NotAcceptableException("Invalid credentials");
@@ -115,6 +118,45 @@ export class AuthService {
      }
   }
 
+  private async findOrCreateGoogleUser(data:{
+    googleId:string,
+    email:string,
+    fullName:string,
+    imageUrl:string | null,
+  }){
+    // fing user with googleId
+    let user = await this.prisma.user.findFirst({
+      where:{
+        OR:[{ googleId: data.googleId }, { email: data.email }],
+      }
+    });
+
+    // if user not found, create new user
+    if(!user){
+      user = await this.prisma.user.create({
+        data:{
+          email:data.email,
+          googleId:data.googleId,
+          fullName:data.fullName,
+          imageUrl:data.imageUrl || null,
+        }
+      });
+      return user;
+    }
+
+    // if exist user in database, but has not googleId
+    if(!user.googleId){
+      await this.prisma.user.update({
+        where:{id:user.id},
+        data:{
+          googleId:data.googleId,
+          imageUrl: user.imageUrl ?? data.imageUrl,
+        }
+      })
+    }
+    return user;
+  }
+
   async loginWithGoogle(idToken:string){
     const ticket = await this.googleClient.verifyIdToken({
       idToken,
@@ -127,6 +169,30 @@ export class AuthService {
       throw new UnauthorizedException('Invalid Google token payload');
     }
 
-    return "google auth"
+    const user = await this.findOrCreateGoogleUser({
+      googleId:payload.sub,
+      email:payload.email,
+      fullName:payload.name ?? payload.email.split("@")[0],
+      imageUrl:payload.picture || null
+    });
+
+    const tokens  = this.generateTokens({
+      sub:user.id,
+      email:user.email,
+      role:user.role
+    });
+
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role,
+      imageUrl: user.imageUrl,
+    };
+
+    return {
+      ...tokens,
+      user:safeUser
+    }
   }
 }
