@@ -6,7 +6,13 @@ import bcrypt from "bcrypt"
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
-
+interface GoogleUserInfo {
+  sub: string;
+  email: string;
+  email_verified?: boolean;
+  name?: string;
+  picture?: string;
+}
 @Injectable()
 export class AuthService {
   private readonly googleClient: OAuth2Client;
@@ -157,42 +163,49 @@ export class AuthService {
     return user;
   }
 
-  async loginWithGoogle(idToken:string){
-    const ticket = await this.googleClient.verifyIdToken({
-      idToken,
-      audience:this.configService.get<string>('auth.googleClientId')
-    });
-    
-    const payload = ticket.getPayload();
+async loginWithGoogle(accessToken: string) {
+  const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-    if (!payload || !payload.email || !payload.sub) {
-      throw new UnauthorizedException('Invalid Google token payload');
-    }
-
-    const user = await this.findOrCreateGoogleUser({
-      googleId:payload.sub,
-      email:payload.email,
-      fullName:payload.name ?? payload.email.split("@")[0],
-      imageUrl:payload.picture || null
-    });
-
-    const tokens  = this.generateTokens({
-      sub:user.id,
-      email:user.email,
-      role:user.role
-    });
-
-    const safeUser = {
-      id: user.id,
-      email: user.email,
-      fullName: user.fullName,
-      role: user.role,
-      imageUrl: user.imageUrl,
-    };
-
-    return {
-      ...tokens,
-      user:safeUser
-    }
+  if (!res.ok) {
+    throw new UnauthorizedException("Invalid Google access token");
   }
+
+  const payload = (await res.json()) as GoogleUserInfo;
+
+  if (!payload.sub || !payload.email) {
+    throw new UnauthorizedException("Invalid Google user profile");
+  }
+
+  const user = await this.findOrCreateGoogleUser({
+    googleId: payload.sub,
+    email: payload.email,
+    fullName: payload.name ?? payload.email.split("@")[0],
+    imageUrl: payload.picture || null,
+  });
+
+  const { acsessToken, refreshToken } = await this.generateTokens({
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  const safeUser = {
+    id: user.id,
+    email: user.email,
+    fullName: user.fullName,
+    role: user.role,
+    imageUrl: user.imageUrl,
+  };
+
+  return {
+    acsessToken,
+    refreshToken,
+    user: safeUser,
+  };
+}
+
 }

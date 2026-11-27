@@ -88,9 +88,29 @@ export class AuthController {
     return this.authService.findById(id);
   }
 
-  @Post('google/auth')
+  @Post('google')
   @Public()
-  googleLogin(@Body('credential') credential: string){
-    return this.authService.loginWithGoogle(credential);
+  async googleLogin(@Body('credential') credential: string, @Res({ passthrough: true }) res: Response) {
+    const { user, acsessToken, refreshToken } =
+      await this.authService.loginWithGoogle(credential);
+
+    res.cookie('access_token', acsessToken, {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie('refresh_token', refreshToken, {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      message: 'Logged in with Google successfully',
+      user,
+    };
   }
 }

@@ -9,7 +9,8 @@ import { useState } from "react";
 import { Loading } from "../components/ui/loading";
 import ErrorMessage from "../components/error/error";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { loginUser } from "../store/slices/authSlice";
+import { googleLoginUser, loginUser } from "../store/slices/authSlice";
+import { useGoogleLogin } from "@react-oauth/google";
 
 export default function SignIn() {
     const navigate = useNavigate();
@@ -41,6 +42,23 @@ export default function SignIn() {
             setErrorText(typeof err === "string" ? err : "Login failed");
         }
     }
+
+
+    const triggerGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setErrorText(null);
+            try {
+                await dispatch(googleLoginUser(tokenResponse.access_token)).unwrap();
+                localStorage.setItem("isLoggedIn", "true");
+                navigate("/home", { replace: true });
+            } catch (err) {
+                setErrorText(typeof err === "string" ? err : "Google login failed");
+            }
+        },
+        onError: () => {
+            setErrorText("Google sign-in was cancelled or failed");
+        },
+    });
 
     return (
         <main className="bg-primary-black-100 p-8 md:p-12 w-full min-h-screen">
@@ -94,10 +112,10 @@ export default function SignIn() {
 
                 {/* google authorization */}
                 <div className="mt-8 border border-white">
-                    <div className="flex gap-4 justify-center text-white p-4">
+                    <button onClick={()=>triggerGoogleLogin()} className="w-full flex gap-4 justify-center text-white p-4">
                         <img src="/images/google.png" alt="google" />
                         <span>Google</span>
-                    </div>
+                    </button>
                 </div>
 
                 {/* sign up container */}
