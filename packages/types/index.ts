@@ -1,7 +1,8 @@
+export type RoleEnum = "USER" | "ADMIN";
 export interface User {
   id: string,
   email: string,
-  role: string,
+  role: RoleEnum,
   fullName:string,
   imageUrl:string | null,
 }

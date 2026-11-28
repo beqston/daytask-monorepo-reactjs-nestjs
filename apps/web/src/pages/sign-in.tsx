@@ -50,6 +50,7 @@ export default function SignIn() {
             try {
                 await dispatch(googleLoginUser(tokenResponse.access_token)).unwrap();
                 localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("isGoogleLogin", "true");
                 navigate("/home", { replace: true });
             } catch (err) {
                 setErrorText(typeof err === "string" ? err : "Google login failed");

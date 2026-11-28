@@ -1,6 +1,6 @@
 interface ProfileDetailProps{
     leftImage:string,
-    rightImage:string,
+    rightImage?:string,
     value?:string,
     setShowDetails?:React.Dispatch<React.SetStateAction<boolean>>,
     onClick?: (e:React.MouseEvent<HTMLImageElement, MouseEvent>)=>void,
@@ -13,7 +13,9 @@ export default function ProfileDetail({ leftImage, rightImage, value, onClick}:P
                 <div className="outline-0 bg-light-blue-100 p-2 pl-10">
                     {value}
                 </div>
-                <img onClick={onClick} src={rightImage} alt="icon" width={24} height={24} className={`absolute right-2 top-2 cursor-pointer`}/>
+                {
+                    rightImage && <img onClick={onClick} src={rightImage} alt="icon" width={24} height={24} className={`absolute right-2 top-2 cursor-pointer`}/>
+                }
             </div>
         </div>
     )

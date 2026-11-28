@@ -21,7 +21,14 @@ export default function Profile(){
             await dispatch(logoutUser()).unwrap();
             navigate("/sign-in", { replace:true });
             localStorage.removeItem("isLoggedIn");
-            localStorage.removeItem("theme");
+            const isGoogleLogin = Boolean(localStorage.getItem("isGoogleLogin"));
+            if(isGoogleLogin){
+                localStorage.removeItem("isGoogleLogin");
+            }
+            const theme = localStorage.getItem('theme');
+            if(theme){
+                localStorage.removeItem("theme");
+            }
         } catch (err:any) {
             setErrorText(err);
         }

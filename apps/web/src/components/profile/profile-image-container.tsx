@@ -14,6 +14,7 @@ export default function ProfileImageContainer() {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const errorTimeoutRef = useRef<number | null>(null);
+  const isGoogleLogin = Boolean(localStorage.getItem("isGoogleLogin"));
 
   function catchErrorFn(error: unknown) {
     const somethingError = "Something went wrong!";
@@ -103,7 +104,7 @@ export default function ProfileImageContainer() {
           className="object-cover w-full h-full rounded-full"
         />
 
-        {user?.imageUrl && (
+        {user?.imageUrl && !isGoogleLogin &&(
           <button
             type="button"
             onClick={handleRemoveImage}
@@ -113,19 +114,25 @@ export default function ProfileImageContainer() {
           </button>
         )}
 
-        <div className="absolute right-1 bottom-2 bg-primary-grey-300 rounded-full w-8 h-8 flex justify-center items-center">
-          <label htmlFor="image" className="w-5 h-5 cursor-pointer">
-            <img src={addsquare} alt="addsquare" className="object-fill w-full h-full" />
-            <input
-              onChange={handleChange}
-              type="file"
-              name="image"
-              id="image"
-              accept="image/jpeg,image/png,image/webp"
-              className="hidden"
-            />
-          </label>
-        </div>
+        {
+          !isGoogleLogin && (
+            <div className="absolute right-1 bottom-2 bg-primary-grey-300 rounded-full w-8 h-8 flex justify-center items-center">
+              <label htmlFor="image" className="w-5 h-5 cursor-pointer">
+                <img src={addsquare} alt="addsquare" className="object-fill w-full h-full" />
+                <input
+                  onChange={handleChange}
+                  type="file"
+                  name="image"
+                  id="image"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                />
+              </label>
+            </div>
+          )
+        }
+
+
       </div>
 
       {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
